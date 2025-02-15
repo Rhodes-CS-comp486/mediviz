@@ -1,4 +1,5 @@
 from PySide6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget, QFileDialog, QLabel
+from PySide6.QtCore import Qt
 import pandas as pd
 import sys
 
@@ -6,20 +7,24 @@ class CSVUploader(QMainWindow):
     def __init__(self):  
         super().__init__()
         self.setWindowTitle("CSV File Uploader")
-        self.setGeometry(300,300,400,200)
+        self.setGeometry(500,500,400,300)
 
         # Layout and widgets
         layout = QVBoxLayout()
         self.label = QLabel("No file selected", self)
+        self.label.setStyleSheet("font-size: 16px; font-weight: bold; color: black; margin: 10px")
+        self.label.setAlignment(Qt.AlignCenter)
         layout.addWidget(self.label) 
 
         upload_button = QPushButton("Upload CSV", self)
+        upload_button.setStyleSheet("background-color:  #B7BFC7; font-size: 16px; font-weight: bold; color: black; padding: 10px; hover {background-color: #A4ABB3;}")
         upload_button.clicked.connect(self.upload_csv)
         layout.addWidget(upload_button)
 
         # Container 
         container = QWidget()
         container.setLayout(layout)
+        container.setStyleSheet("background-color: #E2E5E8;")
         self.setCentralWidget(container)
 
     def upload_csv(self): 
@@ -29,6 +34,8 @@ class CSVUploader(QMainWindow):
             try:
                 df = pd.read_csv(file_path)
                 print(df.head())
+                # We can add checks for the file here
+                
             except Exception as e:
                 self.label.setText(f"Failed to read file: {e}")
 
