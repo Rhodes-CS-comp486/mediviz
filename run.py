@@ -18,6 +18,11 @@ class CSVUploader(QMainWindow):
         self.label.setAlignment(Qt.AlignCenter)
         layout.addWidget(self.label) 
 
+        self.status_label = QLabel("", self)
+        self.status_label.setStyleSheet("font-size: 14px; font-weight: bold; color: green; margin: 10px")
+        self.status_label.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self.status_label)
+
         upload_button = QPushButton("Upload Folder", self)
         upload_button.setStyleSheet("background-color:  #B7BFC7; font-size: 16px; font-weight: bold; color: black; padding: 10px; hover {background-color: #A4ABB3;}")
         upload_button.clicked.connect(self.upload_folder)
@@ -35,16 +40,17 @@ class CSVUploader(QMainWindow):
         layout.addWidget(self.text_display)
 
     def upload_folder(self): 
-        folder_path, _ = QFileDialog.getExistingDirectory(self, "Select Folder")
+        folder_path = QFileDialog.getExistingDirectory(self, "Select Folder")
         if folder_path:
             self.label.setText(f"Selected folder: {folder_path}")
-            files = [f for f in os.listdir(folder_path) if f.endswith(('.csv', '.xlsx', '.xls'))]
+            files = [f for f in os.listdir(folder_path) if f.endswith(('.csv', '.xlxs', '.xls'))]
 
             if not files:
                 self.text_display.setText("No CSV or Excel files found in the selected folder.")
                 return
 
             all_text = " "
+            success = False
             for file in files:
                 file_path = os.path.join(folder_path, file)
                 try:
@@ -55,10 +61,18 @@ class CSVUploader(QMainWindow):
 
                     file_text = f"\nFile: {file}\n{df.to_string(index=True)}\n{'_'*50}\n"
                     all_text += file_text
+                    success = True
                 except Exception as e:
                     all_text += f"\nFailed to read {file}: {e}\n"
             
             self.text_display.setText(all_text)
+
+            if success:
+                self.status_label.setText("Upload successful!")
+                self.status_label.setStyleSheet("color: green;")
+            else:
+                self.status_label.setText("Upload failed: Errors encountered.")
+                self.status_label.setStyleSheet("color: red;")
 
 app = QApplication(sys.argv)
 window = CSVUploader()
