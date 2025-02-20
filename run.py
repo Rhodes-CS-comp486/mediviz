@@ -43,7 +43,7 @@ class CSVUploader(QMainWindow):
         folder_path = QFileDialog.getExistingDirectory(self, "Select Folder")
         if folder_path:
             self.label.setText(f"Selected folder: {folder_path}")
-            files = [f for f in os.listdir(folder_path) if f.endswith(('.csv', '.xlxs', '.xls'))]
+            files = [f for f in os.listdir(folder_path) if f.endswith(('.csv', '.xlsx', '.xls'))]
 
             if not files:
                 self.text_display.setText("No CSV or Excel files found in the selected folder.")
@@ -65,7 +65,9 @@ class CSVUploader(QMainWindow):
                 except Exception as e:
                     all_text += f"\nFailed to read {file}: {e}\n"
             
-            self.text_display.setText(all_text)
+            #self.text_display.setText(all_text)
+            file_names = "\n".join(files)
+            self.text_display.setText(f"Files in folder:\n{file_names}")
 
             if success:
                 self.status_label.setText("Upload successful!")
