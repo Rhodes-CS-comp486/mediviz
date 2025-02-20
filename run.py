@@ -80,3 +80,4 @@ app = QApplication(sys.argv)
 window = CSVUploader()
 window.show()
 sys.exit(app.exec())
+
