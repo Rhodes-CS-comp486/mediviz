@@ -21,6 +21,7 @@ def load_lesion_data(matrix_path, label_path):
     print("matrix and label data loaded")
     return lesion_matrix, labels 
 
+
 def train_svm(lesion_matrix, labels):
     """Train an SVM model on lesion data."""
     print("training model")
