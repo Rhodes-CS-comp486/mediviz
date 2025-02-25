@@ -41,12 +41,13 @@ class CSVUploader(QMainWindow):
 
     def upload_folder(self): 
         folder_path = QFileDialog.getExistingDirectory(self, "Select Folder")
+        
         if folder_path:
             self.label.setText(f"Selected folder: {folder_path}")
-            files = [f for f in os.listdir(folder_path) if f.endswith(('.csv', '.xlsx', '.xls'))]
+            files = [f for f in os.listdir(folder_path) if f.endswith(('.csv'))]
 
             if not files:
-                self.text_display.setText("No CSV or Excel files found in the selected folder.")
+                self.text_display.setText("No CSV file found in selected folder.")
                 return
 
             all_text = " "
