@@ -14,6 +14,7 @@ from PySide6.QtCore import Qt
 import pandas as pd
 import sys
 import os
+from generate import GenerateWindow
 
 class CSVUploader(QMainWindow):
     def __init__(self):  
@@ -38,6 +39,11 @@ class CSVUploader(QMainWindow):
         upload_button.setStyleSheet("background-color:  #B7BFC7; font-size: 16px; font-weight: bold; color: black; padding: 10px; hover {background-color: #A4ABB3;}")
         upload_button.clicked.connect(self.upload_folder)
         layout.addWidget(upload_button)
+        
+        generate_button = QPushButton("Generate Data", self)
+        generate_button.setStyleSheet("background-color:  #B7BFC7; font-size: 16px; font-weight: bold; color: black; padding: 10px; hover {background-color: #A4ABB3;}")
+        generate_button.clicked.connect(self.generate_data)
+        layout.addWidget(generate_button)
 
         # Container 
         container = QWidget()
@@ -52,12 +58,13 @@ class CSVUploader(QMainWindow):
 
     def upload_folder(self): 
         folder_path = QFileDialog.getExistingDirectory(self, "Select Folder")
+        
         if folder_path:
             self.label.setText(f"Selected folder: {folder_path}")
-            files = [f for f in os.listdir(folder_path) if f.endswith(('.csv', '.xlsx', '.xls'))]
+            files = [f for f in os.listdir(folder_path) if f.endswith(('.csv'))]
 
             if not files:
-                self.text_display.setText("No CSV or Excel files found in the selected folder.")
+                self.text_display.setText("No CSV file found in selected folder.")
                 return
 
             all_text = " "
@@ -75,7 +82,7 @@ class CSVUploader(QMainWindow):
                     success = True
                 except Exception as e:
                     all_text += f"\nFailed to read {file}: {e}\n"
-            
+
             #self.text_display.setText(all_text)
             file_names = "\n".join(files)
             self.text_display.setText(f"Files in folder:\n{file_names}")
@@ -86,10 +93,18 @@ class CSVUploader(QMainWindow):
             else:
                 self.status_label.setText("Upload failed: Errors encountered.")
                 self.status_label.setStyleSheet("color: red;")
+                
+    def generate_data(self):
+        """Opens the data generation window."""
+        self.generate_window = GenerateWindow()  # Create instance of the GenerateWindow class
+        self.generate_window.show()
 
 app = QApplication(sys.argv)
 window = CSVUploader()
 window.show()
 sys.exit(app.exec())
+<<<<<<< HEAD
 
 >>>>>>> 77566f28a39483c1f0b51e373e1006234ff60d3d
+=======
+>>>>>>> 425f935f54e82249a18517fe54c73631ae936d76
