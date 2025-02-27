@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-from PySide6.QtWidgets import QApplication, QWidget
-import sys
-
-app = QApplication(sys.argv)
-
-window=QWidget()
-window.show()
-
-app.exec()
-=======
 from PySide6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget, QFileDialog, QLabel, QTextEdit
 from PySide6.QtCore import Qt
 import pandas as pd
@@ -103,8 +92,3 @@ app = QApplication(sys.argv)
 window = CSVUploader()
 window.show()
 sys.exit(app.exec())
-<<<<<<< HEAD
-
->>>>>>> 77566f28a39483c1f0b51e373e1006234ff60d3d
-=======
->>>>>>> 425f935f54e82249a18517fe54c73631ae936d76
