@@ -1,5 +1,6 @@
-from PySide6.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QLabel, QComboBox, QPushButton
+from PySide6.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QLabel, QComboBox, QPushButton, QGridLayout
 from PySide6.QtCore import Qt
+from generate_data import generate_patient_data
 
 class GenerateWindow(QMainWindow):
     def __init__(self):
@@ -9,7 +10,6 @@ class GenerateWindow(QMainWindow):
 
         # Layout
         layout = QVBoxLayout()
-
         self.label = QLabel("Select options for data generation:", self)
         self.label.setAlignment(Qt.AlignCenter)
         self.label.setStyleSheet("font-size: 14px; font-weight: bold; color:black; margin: 10px")
@@ -22,7 +22,7 @@ class GenerateWindow(QMainWindow):
         layout.addWidget(self.label1)
 
         self.dropdown1 = QComboBox(self)
-        self.dropdown1.addItems(["Option 1A", "Option 1B", "Option 1C"])
+        self.dropdown1.addItems(["4", "5", "6"])
         self.dropdown1.setStyleSheet("color: black;")  # Modify with actual options
         self.label1.setStyleSheet("font-size: 12px; font-weight: bold; color: black; margin:5px")
         layout.addWidget(self.label1)
@@ -51,6 +51,7 @@ class GenerateWindow(QMainWindow):
         self.label3.setStyleSheet("font-size: 12px; font-weight: bold; color:black; margin: 1px")
         layout.addWidget(self.label3)
         layout.addWidget(self.dropdown3)
+
 
         # Save Button
         self.save_button = QPushButton("Save Selections", self)
