@@ -32,11 +32,5 @@ def generate_patient_data(folder='patient_data', num_patients=100, size=25, lesi
     print(f"Generated {num_patients} patients in 'patients_data.csv'")
     print(df)
 
-def generate_ground_truth(folder='ground_truth_data', size=25, ground_truth_size=4, ground_truth_distance=5):
-    if not os.path.exists(folder):
-        os.makedirs(folder)
-    ground_truth = []  
-    matrix = np.zeros((size, size))
-
 # Example usage:
 generate_patient_data()

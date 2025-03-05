@@ -5,7 +5,7 @@ class GenerateWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Generate Data")
-        self.setGeometry(550, 550, 400, 300)
+        self.setGeometry(400, 400, 400, 400)
 
         # Layout
         layout = QVBoxLayout()
@@ -102,7 +102,7 @@ class GenerateWindow(QMainWindow):
         # Save Button
         self.save_button = QPushButton("Save Selections", self)
         self.save_button.setStyleSheet("background-color: #B7BFC7; font-size: 14px; font-weight: bold; padding: 10px")
-        self.save_button.clicked.connect(self.save_selections)
+        self.save_button.clicked.connect(self.save_selection)
         layout.addWidget(self.save_button)
 
         # Container
@@ -116,7 +116,7 @@ class GenerateWindow(QMainWindow):
         self.selection2 = self.dropdown2.currentText()
         self.slider_x = self.slider_x.value()
         self.slider_y = self.slider_y.value()
-        print(f"Selections saved: {self.selection1}, {self.selection2}, Slider 1: {self.selection3_slider1}, Slider 2: {self.selection3_slider2}")  # Replace with actual saving logic
+        print(f"Selections saved: {self.selection1}, {self.selection2}, Slider 1: {self.slider_x}, Slider 2: {self.slider_y}")  # Replace with actual saving logic
 
 
 
