@@ -42,21 +42,21 @@ class GenerateWindow(QMainWindow):
         layout.addWidget(self.label3)
 
         self.slider1 = QSlider(Qt.Horizontal, self)
-        self.slider1.setRange(0, 10)
-        self.slider1.setTickInterval(1)
+        self.slider1.setRange(-12.5, 12.5)
+        self.slider1.setTickInterval(.5)
         self.slider1.setTickPosition(QSlider.TicksBelow)
         layout.addWidget(self.slider1)
         
         self.slider2 = QSlider(Qt.Horizontal, self)
-        self.slider2.setRange(0, 10)
-        self.slider2.setTickInterval(1)
+        self.slider2.setRange(-12.5, 12.5)
+        self.slider2.setTickInterval(.5)
         self.slider2.setTickPosition(QSlider.TicksBelow)
         layout.addWidget(self.slider2)
-        self.slider_label1 = QLabel("Slider 1 Value: 0", self)
+        self.slider_label1 = QLabel("Vertical Value: 0", self)
         self.slider_label1.setStyleSheet("font-size: 12px; font-weight: bold; color:black; margin: 5px")
         layout.addWidget(self.slider_label1)
         
-        self.slider_label2 = QLabel("Slider 2 Value: 0", self)
+        self.slider_label2 = QLabel("Horizontal Value: 0", self)
         self.slider_label2.setStyleSheet("font-size: 12px; font-weight: bold; color:black; margin: 5px")
         layout.addWidget(self.slider_label2)
         
