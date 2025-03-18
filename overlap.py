@@ -129,11 +129,42 @@ class GenerateWindow(QMainWindow):
         print("test 2")
         print(f"Saved ground truth box at ({x_grid}, {y_grid}) to 'ground_truth.csv'.")
 
+    def check_overlap(patient_data, ground_truth, overlap_threshold=0.5):
+        patient_data = patient_data.astype(float)
+        ground_truth = ground_truth.astype(float)
+        #Define the ground truth mask (the 4x4 square of 1s)
+        ground_truth_mask = ground_truth == 1
+
+        #Find the overlapping region (patient's 1s that intersect with the the ground truth 1s)
+        overlap = np.sum((patient_data == 1) & ground_truth_mask)
+
+        #Total number of 1s in the ground truth region (this is 4x4 = 16)
+        total_ground_truth_ones = np.sum(ground_truth_mask)
+
+        #Check if the overlap is greater than or equal to the threshold (50%)
+        overlap_percentage = overlap / total_ground_truth_ones
+
+        if overlap_percentage > overlap_threshold:
+            return 1
+        else:
+            return  0
+    
     def make_diagnoses(self):
         df = pd.read_csv('patient_data/patients_data.csv', header=None)
-
+        df_ground_truth = pd.read_csv('ground_truth.csv', header=None)
+        print(df_ground_truth)
+        diagnosis = []
         for i in range(1, df.shape[0]):
             row_data = df.iloc[2].values[1:]
-
             test = pd.DataFrame(row_data.reshape(25,25))
-            print(test)
+            print(f"Patient data shape: {test.shape}")
+            print(f"Ground truth shape: {df_ground_truth.shape}")
+            temp_diagnosis = GenerateWindow.check_overlap(test, df_ground_truth, overlap_threshold=0.5)
+            if temp_diagnosis == 1:
+                diagnosis.append(1)
+            else:
+                diagnosis.append(0)
+            #print(test)
+            print(temp_diagnosis)
+
+   
