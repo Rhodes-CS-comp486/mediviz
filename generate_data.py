@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import random
 
-def generate_patient_data(folder='patient_data', num_patients=100, size=25, lesion_size=4):
+def generate_patient_data(folder='patient_data', num_patients=100, size=25, scale_factor=1):
     if not os.path.exists(folder):
         os.makedirs(folder)
 
@@ -11,13 +11,19 @@ def generate_patient_data(folder='patient_data', num_patients=100, size=25, lesi
 
     for i in range(num_patients):
         matrix = np.zeros((size, size))
-        num_lesions = random.randint(1, 5)
 
-        # Generate random contiguous lesions
-        for _ in range(num_lesions):
-            lesion_size_x, lesion_size_y = lesion_size, lesion_size # this is where, 4 x 4, 5 x 5, 6 x 6
-            start_x, start_y = random.randint(0, size - lesion_size_x), random.randint(0, size - lesion_size_y)
-            matrix[start_x:start_x + lesion_size_x, start_y:start_y + lesion_size_y] = 1
+        # Scale lesion size dynamically
+        base_lesion_size = 4
+        growth_factor = random.randint(1, 3)
+        lesion_size = min(base_lesion_size + int(scale_factor * growth_factor), size)
+
+        # Place lesion at center
+        center_x = size // 2
+        center_y = size // 2
+        start_x = max(0, center_x - lesion_size // 2)
+        start_y = max(0, center_y - lesion_size // 2)
+
+        matrix[start_x:start_x + lesion_size, start_y:start_y + lesion_size] = 1
 
         # Flatten matrix and store with Patient ID
         flattened_matrix = matrix.flatten().tolist()
@@ -30,7 +36,3 @@ def generate_patient_data(folder='patient_data', num_patients=100, size=25, lesi
     # Save to a single CSV file
     df.to_csv(os.path.join(folder, "patients_data.csv"), index=False)
     print(f"Generated {num_patients} patients in 'patients_data.csv'")
-    print(df)
-
-# Example usage:
-generate_patient_data()
