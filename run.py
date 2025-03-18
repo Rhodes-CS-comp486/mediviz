@@ -3,7 +3,7 @@ from PySide6.QtCore import Qt
 import pandas as pd
 import sys
 import os
-from generate import GenerateWindow
+from overlap import GenerateWindow
 
 
 class CSVUploader(QMainWindow):
