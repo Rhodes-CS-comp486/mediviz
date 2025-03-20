@@ -157,7 +157,7 @@ class GenerateWindow(QMainWindow):
         print(df_ground_truth)
         diagnosis = []
         for i in range(1, df.shape[0]):
-            row_data = df.iloc[2].values[1:]
+            row_data = df.iloc[i].values[1:]
             test = pd.DataFrame(row_data.reshape(25,25))
             print(f"Patient data shape: {test.shape}")
             print(f"Ground truth shape: {df_ground_truth.shape}")
