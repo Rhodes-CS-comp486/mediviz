@@ -117,6 +117,56 @@ class GenerateWindow(QMainWindow):
         # Save ground truth as CSV
         pd.DataFrame(grid_data).to_csv("ground_truth.csv", index=False, header=False)
         print(f"Saved ground truth of size {ground_truth_size} at ({x_grid}, {y_grid})")
+        self.make_diagnoses()
 
         # Generate patient data using the scale factor
         generate_data.generate_patient_data(scale_factor=scale_factor)
+
+        
+    def check_overlap(patient_data, ground_truth, overlap_threshold=0.5):
+        patient_data = np.array(patient_data).astype(float)
+        ground_truth = np.array(ground_truth).astype(float)
+        #Define the ground truth mask (the 4x4 square of 1s)
+        ground_truth_mask = ground_truth == 1
+
+        #Find the overlapping region (patient's 1s that intersect with the the ground truth 1s)
+        overlap = np.sum((patient_data == 1) & ground_truth_mask)
+        print("overlap:  ", overlap)
+        #Total number of 1s in the ground truth region (this is 4x4 = 16)
+        total_ground_truth_ones = np.sum(ground_truth_mask)
+        print("total_ground_truth_ones:  ", total_ground_truth_ones)
+        #Check if the overlap is greater than or equal to the threshold (50%)
+        overlap_percentage = overlap / total_ground_truth_ones
+        print(f"Overlap percentage: {overlap_percentage}")
+        print(f"Overlap threshold: {overlap_threshold}")
+
+        if overlap_percentage >= overlap_threshold:
+            return 1
+        else:
+            return  0
+    
+    def make_diagnoses(self):
+        df = pd.read_csv('patient_data/patients_data.csv', header=None)
+        df_ground_truth = pd.read_csv('ground_truth.csv', header=None)
+        print(df_ground_truth)
+        diagnosis = []
+        for i in range(1, df.shape[0]):
+            row_data = df.iloc[i].values[1:]
+            test = pd.DataFrame(row_data.reshape(25,25))
+            print(f"Patient data shape: {test.shape}")
+            print(f"Ground truth shape: {df_ground_truth.shape}")
+            temp_diagnosis = GenerateWindow.check_overlap(test, df_ground_truth, overlap_threshold=0.5)
+            if temp_diagnosis == 1:
+                diagnosis.append(1)
+            else:
+                diagnosis.append(0)
+            #print(test)
+            print(temp_diagnosis)
+           # Create a DataFrame for the diagnoses
+        diagnoses_df = pd.DataFrame({'Diagnosis': diagnosis})
+
+        # Save the diagnoses to a CSV file
+        output_filename = 'diagnoses.csv'
+        diagnoses_df.to_csv(output_filename, index=False)
+
+        print(f"Diagnoses saved to {output_filename}")
