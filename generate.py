@@ -1,6 +1,7 @@
-from PySide6.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QLabel, QComboBox, QPushButton, QSlider, QFrame
+from PySide6.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QLabel, QComboBox, QPushButton, QSlider, QFrame, QMessageBox
 from PySide6.QtCore import Qt
 import pandas as pd 
+import numpy as np
 import generate_data
 
 class GenerateWindow(QMainWindow):
@@ -121,6 +122,9 @@ class GenerateWindow(QMainWindow):
 
         # Generate patient data using the scale factor
         generate_data.generate_patient_data(scale_factor=scale_factor)
+        QMessageBox.information(self, "Success", "Data generation complete!  You can find them in the 'patient_data' folder, in the same path as this application. Would you like to train or test the model now?")
+        self.close()
+
 
         
     def check_overlap(patient_data, ground_truth, overlap_threshold=0.5):
