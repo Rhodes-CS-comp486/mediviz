@@ -69,7 +69,7 @@ class GenerateWindow(QMainWindow):
         self.slider_y.valueChanged.connect(self.update_box_position)
 
         # Save Button
-        self.save_button = QPushButton("Save Selections", self)
+        self.save_button = QPushButton("Generate Data", self)
         self.save_button.clicked.connect(self.save_selection)
         layout.addWidget(self.save_button)
 
@@ -122,8 +122,10 @@ class GenerateWindow(QMainWindow):
 
         # Generate patient data using the scale factor
         generate_data.generate_patient_data(scale_factor=scale_factor)
-        QMessageBox.information(self, "Success", "Data generation complete!  You can find them in the 'patient_data' folder, in the same path as this application. Would you like to train or test the model now?")
-        self.close()
+        QMessageBox.information(self, "Success", "Data generation complete!  You can find them in the 'patient_data' folder, in the same path as this application.")
+
+        self.save_button.setText("Generate more data? (This will overwrite previously generated data)")
+
 
 
         
