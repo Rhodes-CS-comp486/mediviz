@@ -1,8 +1,7 @@
 import sys
-from PySide6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QTextEdit
-from PySide6.QtCore import Qt
-import file_loader
-from svm_runner import SVMRunner
+import os
+from generate import GenerateWindow
+
 
 class CSVUploader(QMainWindow):
     def __init__(self):  
@@ -27,6 +26,11 @@ class CSVUploader(QMainWindow):
         upload_button.setStyleSheet("background-color:  #B7BFC7; font-size: 16px; font-weight: bold; color: black; padding: 10px;")
         upload_button.clicked.connect(self.upload_folder)
         layout.addWidget(upload_button)
+        
+        generate_button = QPushButton("Generate Data", self)
+        generate_button.setStyleSheet("background-color:  #B7BFC7; font-size: 16px; font-weight: bold; color: black; padding: 10px; hover {background-color: #A4ABB3;}")
+        generate_button.clicked.connect(self.generate_data)
+        layout.addWidget(generate_button)
 
         self.text_display = QTextEdit(self)
         self.text_display.setReadOnly(True)
@@ -53,16 +57,50 @@ class CSVUploader(QMainWindow):
         self.status_label.setText("Processing...")
         self.status_label.setStyleSheet("color: blue;")
 
-        # Run SVM
-        svm_runner = SVMRunner(lesion_matrices, labels)
-        results = svm_runner.train_and_evaluate()
+    def upload_folder(self): 
+        folder_path = QFileDialog.getExistingDirectory(self, "Select Folder")
+        
+        if folder_path:
+            self.label.setText(f"Selected folder: {folder_path}")
+            files = [f for f in os.listdir(folder_path) if f.endswith(('.csv'))]
 
-        self.text_display.setText(results)
-        self.status_label.setText("SVM Training Completed!")
-        self.status_label.setStyleSheet("color: green;")
+            if not files:
+                self.text_display.setText("No CSV file found in selected folder.")
+                return
 
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = CSVUploader()
-    window.show()
-    sys.exit(app.exec())
+            all_text = " "
+            success = False
+            for file in files:
+                file_path = os.path.join(folder_path, file)
+                try:
+                    if file.endswith('.csv'):
+                        df = pd.read_csv(file_path)
+                    else:
+                        df = pd.read_excel(file_path)
+
+                    file_text = f"\nFile: {file}\n{df.to_string(index=True)}\n{'_'*50}\n"
+                    all_text += file_text
+                    success = True
+                except Exception as e:
+                    all_text += f"\nFailed to read {file}: {e}\n"
+
+            #self.text_display.setText(all_text)
+            file_names = "\n".join(files)
+            self.text_display.setText(f"Files in folder:\n{file_names}")
+
+            if success:
+                self.status_label.setText("Upload successful!")
+                self.status_label.setStyleSheet("color: green;")
+            else:
+                self.status_label.setText("Upload failed: Errors encountered.")
+                self.status_label.setStyleSheet("color: red;")
+                
+    def generate_data(self):
+        """Opens the data generation window."""
+        self.generate_window = GenerateWindow()  # Create instance of the GenerateWindow class
+        self.generate_window.show()
+
+app = QApplication(sys.argv)
+window = CSVUploader()
+window.show()
+sys.exit(app.exec())
