@@ -5,6 +5,8 @@ import numpy as np
 import generate_data
 
 class GenerateWindow(QMainWindow):
+    def run_svm(self):
+        QMessageBox.information(self, "Success", "ML Algorithm run successfully! ")
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Generate Data")
@@ -73,6 +75,11 @@ class GenerateWindow(QMainWindow):
         self.save_button.clicked.connect(self.save_selection)
         layout.addWidget(self.save_button)
 
+        self.run_svm_button = QPushButton("Run ML Algorithm", self)
+        self.run_svm_button.setEnabled(False)
+        self.run_svm_button.clicked.connect(self.run_svm)
+        layout.addWidget(self.run_svm_button)
+
         # Container
         container = QWidget()
         container.setLayout(layout)
@@ -126,6 +133,8 @@ class GenerateWindow(QMainWindow):
 
         self.save_button.setText("Generate more data? (This will overwrite previously generated data)")
 
+        self.run_svm_button.setEnabled(True)
+
 
 
         
@@ -176,3 +185,4 @@ class GenerateWindow(QMainWindow):
         diagnoses_df.to_csv(output_filename, index=False)
 
         print(f"Diagnoses saved to {output_filename}")
+

@@ -1,6 +1,10 @@
+from PySide6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget, QFileDialog, QLabel, QTextEdit
+from PySide6.QtCore import Qt
+import pandas as pd
 import sys
 import os
 from generate import GenerateWindow
+from algorithm import RunAlgorithmWindow
 
 
 class CSVUploader(QMainWindow):
@@ -22,9 +26,9 @@ class CSVUploader(QMainWindow):
         self.status_label.setAlignment(Qt.AlignCenter)
         layout.addWidget(self.status_label)
 
-        upload_button = QPushButton("Upload Patient Data", self)
+        upload_button = QPushButton("Upload Data for ML Alg?", self)
         upload_button.setStyleSheet("background-color:  #B7BFC7; font-size: 16px; font-weight: bold; color: black; padding: 10px;")
-        upload_button.clicked.connect(self.upload_folder)
+        upload_button.clicked.connect(self.run_algorithm) # used to be self.upload_folder
         layout.addWidget(upload_button)
         
         generate_button = QPushButton("Generate Data", self)
@@ -43,19 +47,6 @@ class CSVUploader(QMainWindow):
         container.setStyleSheet("background-color: #E2E5E8;")
         self.setCentralWidget(container)
 
-    def upload_folder(self):
-        """Handles patient data loading and runs SVM."""
-        lesion_matrices, labels, error = file_loader.load_patient_data()
-        
-        if error:
-            self.text_display.setText(error)
-            self.status_label.setText("Error")
-            self.status_label.setStyleSheet("color: red;")
-            return
-        
-        self.label.setText("Patient data loaded successfully.")
-        self.status_label.setText("Processing...")
-        self.status_label.setStyleSheet("color: blue;")
 
     def upload_folder(self): 
         folder_path = QFileDialog.getExistingDirectory(self, "Select Folder")
@@ -99,7 +90,10 @@ class CSVUploader(QMainWindow):
         """Opens the data generation window."""
         self.generate_window = GenerateWindow()  # Create instance of the GenerateWindow class
         self.generate_window.show()
-
+    def run_algorithm(self):
+        """Opens the algorithm window."""
+        self.algorithm_window = RunAlgorithmWindow()
+        self.algorithm_window.show()
 app = QApplication(sys.argv)
 window = CSVUploader()
 window.show()
