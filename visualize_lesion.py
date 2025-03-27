@@ -2,7 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 import csv
-import pandas as pd
+import pandas as pd 
+import numpy as np
+import matplotlib.pyplot as plt
 
 def visualize_patient(df, patient_index):
     """
@@ -13,6 +15,24 @@ def visualize_patient(df, patient_index):
     """
     if patient_index >= len(df):
         raise ValueError("Invalid patient index")
+    
+    
+    
+    patient_data = df.iloc[patient_index, 1:].values  # Select patient, exclude first column
+    patient_data = np.array(patient_data, dtype=np.float64)
+
+    # Reshape into a 25x25 grid (order = 'C' for row-wise shaping)
+    lesion_matrix_c = patient_data.reshape((25, 25), order='C')
+    
+    # Plot to visualize if lesions appear contiguous
+    fig, axes = plt.subplots(1, 2, figsize=(10, 5))
+    axes[0].imshow(lesion_matrix_c, cmap='gray')
+    axes[0].set_title('C-Order Reshape')
+    
+    plt.show()
+
+
+    """
     # Remove Patient_ID column and convert to float
     patient_data = df[df["Patient_ID"] == "Patient_1"].iloc[:, 1:].to_numpy().reshape(25, 25)
     patient_data = df.iloc[patient_index, 1:].astype(float).values
@@ -31,7 +51,8 @@ def visualize_patient(df, patient_index):
     plt.imshow(patient_grid, cmap="gray", vmin=0, vmax=1)
     plt.axis("off")
     plt.show()
-
+    """
+    
 
 
 
