@@ -17,10 +17,19 @@ class SVMRunner:
             return "Error: At least one sample from each class (0 and 1) is required."
         self.model.fit(self.patient_matrices, self.diagnoses)
         predictions = self.model.predict(self.patient_matrices)
+        with open('svm_model.pkl', 'wb') as file:
+            pickle.dump(self.model,file)
         return classification_report(self.diagnoses, predictions)
     def test(self, test_data):
         """Tests the SVM model on new data and returns the predictions."""
         return self.model.predict(self.patient_matrices)
+    def load_pickle(filename='svm_model.pkl'):
+        """Loads the SVM model from a file."""
+        if not os.path.exists(filename):
+            return "no pickle file"
+        with open(filename, 'rb') as file:
+            model = pickle.load(file)
+            return model
     
 
 
