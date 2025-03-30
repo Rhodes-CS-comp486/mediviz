@@ -2,6 +2,8 @@ import numpy as np
 from sklearn.svm import SVC
 from sklearn.metrics import classification_report
 import csv
+import os
+import pickle
 
 class SVMRunner:
     def __init__(self, patient_matrices, diagnoses):
@@ -23,18 +25,32 @@ class SVMRunner:
 
 
 #EVERYTHING BELOW THIS IS JUST TESTING YOU CAN DELETE IT LATER <3333
+def load(filename):
+    """Loads the SVM model from a file."""
+    if not os.path.exists(filename):
+        return False
+       # return "Error: No saved model found. Train the model first."
+    with open(filename, 'rb') as file:
+        model = pickle.load(file)
 
-def train_and_evaluate(patient_matrices, diagnoses):
-        model = SVC(kernel='linear')
+
+def train_and_evaluate(model, patient_matrices, diagnoses):
+        if load('svm_model.pkl') == False:
+            model = SVC(kernel='linear')
         """Trains an SVM model and prints the classification report."""
         # if len(set(diagnoses)) < 2:
         #     return "Error: At least one sample from each class (0 and 1) is required."
         model.fit(patient_matrices, diagnoses)
         predictions = model.predict(patient_matrices)
+
+        with open('svm_model.pkl', 'wb') as file:
+            pickle.dump(model, file)
         return classification_report(diagnoses, predictions)
+
 def test(self, test_data):
     """Tests the SVM model on new data and returns the predictions."""
     return self.model.predict(self.patient_matrices)
+
 
 
 with open('patient_data/patients_data.csv', 'r') as file:
