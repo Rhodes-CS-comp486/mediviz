@@ -13,6 +13,7 @@ def visualize_patient(df, patient_index):
         df (pd.DataFrame): DataFrame where each row is a patient.
         patient_index (int): Index of the patient in the DataFrame.
     """
+    
     if patient_index >= len(df):
         raise ValueError("Invalid patient index")
     
@@ -23,6 +24,7 @@ def visualize_patient(df, patient_index):
 
     # Reshape into a 25x25 grid (order = 'C' for row-wise shaping)
     lesion_matrix_c = patient_data.reshape((25, 25), order='C')
+    print(lesion_matrix_c)
     
     # Plot to visualize if lesions appear contiguous
     fig, axes = plt.subplots(1, 2, figsize=(10, 5))
@@ -30,7 +32,6 @@ def visualize_patient(df, patient_index):
     axes[0].set_title('C-Order Reshape')
     
     plt.show()
-
 
     """
     # Remove Patient_ID column and convert to float
