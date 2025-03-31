@@ -5,6 +5,7 @@ import sys
 import os
 from generate import GenerateWindow
 
+
 class CSVUploader(QMainWindow):
     def __init__(self):  
         super().__init__()
