@@ -4,7 +4,7 @@ import pandas as pd
 import sys
 import os
 from generate import GenerateWindow
-from algorithm import RunAlgorithmWindow
+from algorithm import ChooseUploader
 
 
 class CSVUploader(QMainWindow):
@@ -92,7 +92,7 @@ class CSVUploader(QMainWindow):
         self.generate_window.show()
     def run_algorithm(self):
         """Opens the algorithm window."""
-        self.algorithm_window = RunAlgorithmWindow()
+        self.algorithm_window = ChooseUploader()
         self.algorithm_window.show()
 app = QApplication(sys.argv)
 window = CSVUploader()
