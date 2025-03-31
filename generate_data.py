@@ -10,12 +10,13 @@ def generate_patient_data(folder='patient_data', num_patients=100, size=25, scal
 
     patient_data = []  # Store patient data for a single CSV
 
-    growth_factor = random.randint(1, 3)
+
     for i in range(num_patients):
         matrix = np.zeros((size, size))
 
         # Scale lesion size dynamically
         base_lesion_size = 4
+        growth_factor = random.randint(1, 3)
         lesion_size = min(base_lesion_size + int(scale_factor * growth_factor), size)
 
         # Place lesion at center
@@ -38,17 +39,4 @@ def generate_patient_data(folder='patient_data', num_patients=100, size=25, scal
     df.to_csv(os.path.join(folder, "patients_data.csv"), index=False)
     print(f"Generated {num_patients} patients in 'patients_data.csv'")
     print(df)
-    
-    """
-    integrate into button
-    #delete after testing (there should be a gap at line 29)
-    test_df = pd.read_csv("patient_data/patients_data.csv")
-    visualize = input("Do you want to visualize? y/n")
-    while(visualize == "y"):
-        patient_to_visualize = int(input("What patient? (Enter a numer 1-1000)"))
-        visualize_lesion.visualize_patient(test_df, patient_to_visualize)
-        visualize = input("Do you want to visualize another patient? y/n")
-    #delete after testing"
-    
-    """
 
