@@ -20,10 +20,12 @@ class SVMRunner:
         with open('svm_model.pkl', 'wb') as file:
             pickle.dump(self.model,file)
         return classification_report(self.diagnoses, predictions)
+    
     def test(self, test_data):
         """Tests the SVM model on new data and returns the predictions."""
         return self.model.predict(self.patient_matrices)
-    def load_pickle(filename='svm_model.pkl'):
+    
+    def load_trained_model(filename='svm_model.pkl'):
         """Loads the SVM model from a file."""
         if not os.path.exists(filename):
             return "no pickle file"
