@@ -3,6 +3,7 @@ from PySide6.QtCore import Qt
 import pandas as pd 
 import numpy as np
 import generate_data
+from visualize import VisualizeWindow
 
 class GenerateWindow(QMainWindow):
     def __init__(self):
@@ -23,7 +24,7 @@ class GenerateWindow(QMainWindow):
         layout.addWidget(self.label1)
 
         self.dropdown1 = QComboBox(self)
-        self.dropdown1.addItems(["3", "4", "5"])  # Scale factor options
+        self.dropdown1.addItems(["0.05", "0.5", "2"])  # Scale factor options
         layout.addWidget(self.dropdown1)
 
         # Ground Truth Size Dropdown
@@ -72,6 +73,12 @@ class GenerateWindow(QMainWindow):
         self.save_button = QPushButton("Generate Data", self)
         self.save_button.clicked.connect(self.save_selection)
         layout.addWidget(self.save_button)
+        
+        # Visualize Button 
+        self.visualize_lesion_button = QPushButton("Visualize Data", self)
+        self.visualize_lesion_button.clicked.connect(self.visualize_data)
+        self.visualize_lesion_button.setVisible(False) #Hide button until after lesions are generated
+        layout.addWidget(self.visualize_lesion_button)
 
         # Container
         container = QWidget()
@@ -104,7 +111,7 @@ class GenerateWindow(QMainWindow):
         x_grid = self.slider_x.value()
         y_grid = self.slider_y.value()
         ground_truth_size = int(self.dropdown2.currentText())  # User-selected size
-        scale_factor = int(self.dropdown1.currentText())  # User-selected scale factor
+        scale_factor = float(self.dropdown1.currentText())  # User-selected scale factor
 
         # Generate 25x25 matrix
         grid_data = [[0 for _ in range(25)] for _ in range(25)]
@@ -125,9 +132,11 @@ class GenerateWindow(QMainWindow):
         QMessageBox.information(self, "Success", "Data generation complete!  You can find them in the 'patient_data' folder, in the same path as this application.")
 
         self.save_button.setText("Generate more data? (This will overwrite previously generated data)")
-
-
-
+                
+      
+        #Show Visualize Lesion Button now that data is generated 
+        self.visualize_lesion_button.setVisible(True)
+        
         
     def check_overlap(patient_data, ground_truth, overlap_threshold=0.5):
         patient_data = np.array(patient_data).astype(float)
@@ -176,3 +185,15 @@ class GenerateWindow(QMainWindow):
         diagnoses_df.to_csv(output_filename, index=False)
 
         print(f"Diagnoses saved to {output_filename}")
+    
+    def visualize_data(self): 
+        """Opens the data generation window."""
+        self.visualize_window = VisualizeWindow()  # Create instance of the GenerateWindow class
+        self.visualize_window.show()
+        
+        
+                
+
+        
+
+        

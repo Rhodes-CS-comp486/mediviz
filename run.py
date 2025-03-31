@@ -88,6 +88,7 @@ class CSVUploader(QMainWindow):
         """Opens the data generation window."""
         self.generate_window = GenerateWindow()  # Create instance of the GenerateWindow class
         self.generate_window.show()
+        
 
 app = QApplication(sys.argv)
 window = CSVUploader()

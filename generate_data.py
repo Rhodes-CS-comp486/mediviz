@@ -2,7 +2,7 @@ import os
 import numpy as np
 import pandas as pd
 import random
-import visualize_lesion
+
 
 def generate_patient_data(folder='patient_data', num_patients=100, size=25, scale_factor=1):
     if not os.path.exists(folder):
@@ -10,12 +10,12 @@ def generate_patient_data(folder='patient_data', num_patients=100, size=25, scal
 
     patient_data = []  # Store patient data for a single CSV
 
+    growth_factor = random.randint(1, 3)
     for i in range(num_patients):
         matrix = np.zeros((size, size))
 
         # Scale lesion size dynamically
         base_lesion_size = 4
-        growth_factor = random.randint(1, 3)
         lesion_size = min(base_lesion_size + int(scale_factor * growth_factor), size)
 
         # Place lesion at center
@@ -39,6 +39,8 @@ def generate_patient_data(folder='patient_data', num_patients=100, size=25, scal
     print(f"Generated {num_patients} patients in 'patients_data.csv'")
     print(df)
     
+    """
+    integrate into button
     #delete after testing (there should be a gap at line 29)
     test_df = pd.read_csv("patient_data/patients_data.csv")
     visualize = input("Do you want to visualize? y/n")
@@ -47,4 +49,6 @@ def generate_patient_data(folder='patient_data', num_patients=100, size=25, scal
         visualize_lesion.visualize_patient(test_df, patient_to_visualize)
         visualize = input("Do you want to visualize another patient? y/n")
     #delete after testing"
+    
+    """
 
