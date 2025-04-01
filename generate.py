@@ -24,7 +24,7 @@ class GenerateWindow(QMainWindow):
         layout.addWidget(self.label1)
 
         self.dropdown1 = QComboBox(self)
-        self.dropdown1.addItems(["0.05", "0.5", "2"])  # Scale factor options
+        self.dropdown1.addItems(["1", "2", "3", "4", "5"])  # Scale factor options
         layout.addWidget(self.dropdown1)
 
         # Ground Truth Size Dropdown
@@ -32,13 +32,23 @@ class GenerateWindow(QMainWindow):
         layout.addWidget(self.label2)
 
         self.dropdown2 = QComboBox(self)
-        self.dropdown2.addItems(["3", "4", "5", "6", "7"])  # Ground truth size options
+        self.dropdown2.addItems(["3", "4", "5", "6", "7", "8", "9", "10", "15"])  # Ground truth size options
         self.dropdown2.currentIndexChanged.connect(self.update_box_size)  # Update box size and sliders
         layout.addWidget(self.dropdown2)
+        
+        #Lesion Distribution Dropdown 
+        self.label3 = QLabel("Select Lesion Position Variance:", self)
+        layout.addWidget(self.label3)
+
+        #Lesion distribution options 
+        self.dropdown3 = QComboBox(self)
+        self.dropdown3.setMaxVisibleItems(20)  
+        self.dropdown3.addItems(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"])  #1-20
+        layout.addWidget(self.dropdown3)
 
         # Grid for visualization
         self.grid = QFrame(self)
-        self.grid.setFixedSize(250, 250)
+        self.grid.setFixedSize(500, 500)
         self.grid.setStyleSheet("background-color: black; margin: 10px")
         layout.addWidget(self.grid)
 
@@ -79,7 +89,14 @@ class GenerateWindow(QMainWindow):
         self.visualize_lesion_button.clicked.connect(self.visualize_data)
         self.visualize_lesion_button.setVisible(False) #Hide button until after lesions are generated
         layout.addWidget(self.visualize_lesion_button)
-
+        
+        # Text Box for Diagnoses Percentage 
+        self.diag_text_box = QLabel("Diagnoses Percentage", self)
+        self.diag_text_box.setWordWrap(True)  # Enable word wrapping
+        self.diag_text_box.setStyleSheet("border: 1px solid black; padding: 10px; background-color: #f0f0f0; color:black")  
+        self.diag_text_box.setVisible(False)
+        layout.addWidget(self.diag_text_box)
+        
         # Container
         container = QWidget()
         container.setLayout(layout)
@@ -90,13 +107,15 @@ class GenerateWindow(QMainWindow):
 
     def update_box_size(self):
         """Updates the red box size and slider range based on ground truth selection."""
-        size = int(self.dropdown2.currentText()) * 10  # Convert to pixels
+        size = (int(self.dropdown2.currentText()) * 10)  # Convert to pixels
         self.box.setFixedSize(size, size)
 
         # Adjust slider range to keep ground truth inside the grid
-        max_slider_value = (250 - size) // 10  # Ensure box stays within 250x250 grid
+        max_slider_value = (500 - size) // 10  # Ensure box stays within 250x250 grid
         self.slider_x.setRange(0, max_slider_value)
         self.slider_y.setRange(0, max_slider_value)
+        
+        self.update_box_position()
 
     def update_box_position(self):
         """Updates the red box position based on slider values."""
@@ -113,13 +132,13 @@ class GenerateWindow(QMainWindow):
         ground_truth_size = int(self.dropdown2.currentText())  # User-selected size
         scale_factor = float(self.dropdown1.currentText())  # User-selected scale factor
 
-        # Generate 25x25 matrix
-        grid_data = [[0 for _ in range(25)] for _ in range(25)]
+        # Generate 50x50 matrix
+        grid_data = [[0 for _ in range(50)] for _ in range(50)]
 
         # Apply selected ground truth size at chosen location
         for i in range(ground_truth_size):
             for j in range(ground_truth_size):
-                if 0 <= y_grid + i < 25 and 0 <= x_grid + j < 25:  # Boundary check
+                if 0 <= y_grid + i < 50 and 0 <= x_grid + j < 50:
                     grid_data[y_grid + i][x_grid + j] = 1
 
         # Save ground truth as CSV
@@ -134,8 +153,21 @@ class GenerateWindow(QMainWindow):
         self.save_button.setText("Generate more data? (This will overwrite previously generated data)")
                 
       
-        #Show Visualize Lesion Button now that data is generated 
+        """Get Percentage of Patients with a positive diagnosis"""
+        # Load the CSV
+        df = pd.read_csv("diagnoses.csv") 
+
+        # Count occurrences of 1
+        num_ones = (df["Diagnosis"] == 1).sum()  # Count rows where Diagnosis == 1
+        total_rows = len(df)
+        positive_percentage = np.round((num_ones / total_rows) * 100,2)
+        self.diag_text_box.setText(f"Percentage of Patients with a positive diagnosis: {positive_percentage}")
+        
+        #Show percentage to user 
         self.visualize_lesion_button.setVisible(True)
+        
+        #Show Visualize Lesion Button now that data is generated 
+        self.diag_text_box.setVisible(True)
         
         
     def check_overlap(patient_data, ground_truth, overlap_threshold=0.5):
@@ -163,13 +195,13 @@ class GenerateWindow(QMainWindow):
     def make_diagnoses(self):
         df = pd.read_csv('patient_data/patients_data.csv', header=None)
         df_ground_truth = pd.read_csv('ground_truth.csv', header=None)
-        print(df_ground_truth)
+        #print(df_ground_truth)
         diagnosis = []
         for i in range(1, df.shape[0]):
             row_data = df.iloc[i].values[1:]
-            test = pd.DataFrame(row_data.reshape(25,25))
-            print(f"Patient data shape: {test.shape}")
-            print(f"Ground truth shape: {df_ground_truth.shape}")
+            test = pd.DataFrame(row_data.reshape(50,50))
+            #print(f"Patient data shape: {test.shape}")
+            #print(f"Ground truth shape: {df_ground_truth.shape}")
             temp_diagnosis = GenerateWindow.check_overlap(test, df_ground_truth, overlap_threshold=0.5)
             if temp_diagnosis == 1:
                 diagnosis.append(1)

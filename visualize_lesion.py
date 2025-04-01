@@ -22,7 +22,7 @@ def visualize_patient(df, patient_index, parent_window=None):
             patient_data = np.array(patient_data, dtype=np.float64)
 
             # Reshape into a 25x25 grid (order = 'C' for row-wise shaping)
-            lesion_matrix_c = patient_data.reshape((25, 25), order='C')
+            lesion_matrix_c = patient_data.reshape((50, 50), order='C')
             print(lesion_matrix_c)
                 
             plt.figure(figsize=(5, 5))  # Create a single plot
