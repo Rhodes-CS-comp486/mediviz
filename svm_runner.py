@@ -74,7 +74,7 @@ with open('diagnoses.csv', 'r') as file:
     csv_reader = csv.reader(file)
     diagnoses = list(csv_reader)
     diagnoses = np.array(diagnoses)
-    diagnoses  = diagnoses[1:].ravel()
+    diagnoses  = diagnoses[1:].ravel() #just turns it into the correct structure for the model to run
 
 
 # print(f"Shape of patients: {patients.shape}")

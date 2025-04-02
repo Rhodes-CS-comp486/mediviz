@@ -167,10 +167,12 @@ class GenerateWindow(QMainWindow):
         diagnosis = []
         for i in range(1, df.shape[0]):
             row_data = df.iloc[i].values[1:]
-            test = pd.DataFrame(row_data.reshape(25,25))
-            print(f"Patient data shape: {test.shape}")
+            patient = pd.DataFrame(row_data.reshape(50,50))
+            print(f"Patient data shape: {patient.shape}")
             print(f"Ground truth shape: {df_ground_truth.shape}")
-            temp_diagnosis = GenerateWindow.check_overlap(test, df_ground_truth, overlap_threshold=0.5)
+            temp_diagnosis = GenerateWindow.check_overlap(patient, df_ground_truth, overlap_threshold=0.5)
+
+
             if temp_diagnosis == 1:
                 diagnosis.append(1)
             else:
