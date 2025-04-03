@@ -12,7 +12,7 @@ class VisualizeWindow(QMainWindow):
         # Layout
         layout = QVBoxLayout()
         
-        self.label = QLabel("Select which Patient you would like to visualize (1-100):", self)
+        self.label = QLabel("Select which Patient you would like to visualize (0-99):", self)
         self.label.setAlignment(Qt.AlignCenter)
         self.label.setStyleSheet("font-size: 14px; font-weight: bold; color: black; margin: 10px")
         layout.addWidget(self.label)  
@@ -39,14 +39,13 @@ class VisualizeWindow(QMainWindow):
         
 
     def save_input(self):
-        """Save input text to a variable when Enter is pressed or button is clicked."""
-        self.user_input_value = self.input_box.text()  # Store input in a variable
-        
-        if not self.user_input_value.isdigit():
-            QMessageBox.critical(self, "Invalid Input", "Please enter a valid number to select a patient.")
-            return
-        
-        QMessageBox.information(self, "Input Saved!", f"Visualizing lesion for patient: {self.user_input_value}...")
-        df = pd.read_csv("patient_data/patients_data.csv")
-        visualize_patient(df, self.user_input_value, parent_window=self)
+            """Save input text to a variable when Enter is pressed or button is clicked."""
+            self.user_input_value = self.input_box.text()  # Store input in a variable
+            if not self.user_input_value.isdigit():
+                QMessageBox.critical(self, "Invalid Input", "Please enter a valid number to select a patient.")
+                return
+            QMessageBox.information(self, "Input Saved!", f"Visualizing lesion for patient: {self.user_input_value}...")
+            df = pd.read_csv("patient_data/patients_data.csv")
+            gt = pd.read_csv("ground_truth.csv")
+            visualize_patient(df, gt, self.user_input_value, parent_window=self)
 

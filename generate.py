@@ -148,7 +148,9 @@ class GenerateWindow(QMainWindow):
         QMessageBox.information(self, "Success", "Data generation complete!  You can find them in the 'patient_data' folder, in the same path as this application.")
 
         self.save_button.setText("Generate more data? (This will overwrite previously generated data)")
-            
+        
+        #Show percentage to user
+        self.visualize_lesion_button.setVisible(True)
       
         """Get Percentage of Patients with a positive diagnosis"""
         # Load the CSV
@@ -216,6 +218,9 @@ class GenerateWindow(QMainWindow):
         """Opens the data generation window."""
         self.visualize_window = VisualizeWindow()  # Create instance of the GenerateWindow class
         self.visualize_window.show()
+        
+
+
         
         
                 
