@@ -91,6 +91,14 @@ class GenerateWindow(QMainWindow):
         self.visualize_lesion_button.setVisible(False) #Hide button until after lesions are generated
         layout.addWidget(self.visualize_lesion_button)
         
+        # Text Box for Diagnoses Percentage
+        self.diag_text_box = QLabel("Diagnoses Percentage", self)
+        self.diag_text_box.setWordWrap(True)  # Enable word wrapping
+        self.diag_text_box.setStyleSheet("border: 1px solid black; padding: 10px; background-color: #F0F0F0; color:black")
+        self.diag_text_box.setVisible(False)
+        layout.addWidget(self.diag_text_box)
+
+        
         
         # Container
         container = QWidget()
@@ -155,6 +163,16 @@ class GenerateWindow(QMainWindow):
         """Get Percentage of Patients with a positive diagnosis"""
         # Load the CSV
         df = pd.read_csv("diagnoses.csv") 
+        
+        # Count occurrences of 1
+        num_ones = (df["Diagnosis"] == 1).sum()  # Count rows where Diagnosis == 1
+        total_rows = len(df)
+        positive_percentage = np.round((num_ones / total_rows) * 100,2)
+        self.diag_text_box.setText(f"Percentage of Patients with a positive diagnosis: {positive_percentage}")
+        #Show percentage to user
+        self.visualize_lesion_button.setVisible(True)
+        #Show Visualize Lesion Button now that data is generated
+        self.diag_text_box.setVisible(True)
         
         
     def check_overlap(patient_data, ground_truth, overlap_threshold=0.5):
