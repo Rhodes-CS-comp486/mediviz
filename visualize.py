@@ -48,6 +48,5 @@ class VisualizeWindow(QMainWindow):
         
         QMessageBox.information(self, "Input Saved!", f"Visualizing lesion for patient: {self.user_input_value}...")
         df = pd.read_csv("patient_data/patients_data.csv")
-        gt = pd.read_csv("ground_truth.csv")
-        visualize_patient(df, gt, self.user_input_value, parent_window=self)
+        visualize_patient(df, self.user_input_value, parent_window=self)
 

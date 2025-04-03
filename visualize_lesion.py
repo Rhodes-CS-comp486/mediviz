@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 from PySide6.QtWidgets import QMessageBox, QInputDialog
 
-def visualize_patient(df, gt, patient_index, parent_window=None):
+def visualize_patient(df, patient_index, parent_window=None):
     """
     Visualizes an entire patient's lesion grid as a 25x25 image.
     Parameters:
@@ -21,7 +21,7 @@ def visualize_patient(df, gt, patient_index, parent_window=None):
         
             patient_data = df.iloc[patient_index, 1:].values  # Select patient, exclude first column
             patient_data = np.array(patient_data, dtype=np.float64)
-            gt_data = np.array(gt, dtype=np.float64)
+           
 
             # Reshape into a 25x25 grid (order = 'C' for row-wise shaping)
             lesion_matrix_c = patient_data.reshape((50, 50), order='C')
@@ -30,7 +30,6 @@ def visualize_patient(df, gt, patient_index, parent_window=None):
                 
             plt.figure(figsize=(5, 5))  # Create a single plot
             plt.imshow(lesion_matrix_c, cmap='gray')
-            plt.contour(gt_data, levels=[0.5],colors='red',linewidths=1.5)
             plt.title(f"Lesion Graph for Patient {patient_index}")
             plt.show()
             
