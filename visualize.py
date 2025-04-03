@@ -12,7 +12,7 @@ class VisualizeWindow(QMainWindow):
         # Layout
         layout = QVBoxLayout()
         
-        self.label = QLabel("Select which Patient you would like to visualize:", self)
+        self.label = QLabel("Select which Patient you would like to visualize (1-100):", self)
         self.label.setAlignment(Qt.AlignCenter)
         self.label.setStyleSheet("font-size: 14px; font-weight: bold; color: black; margin: 10px")
         layout.addWidget(self.label)  

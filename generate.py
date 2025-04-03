@@ -48,6 +48,7 @@ class GenerateWindow(QMainWindow):
 
         # Grid for visualization
         self.grid = QFrame(self)
+        #change to 500 !!!!
         self.grid.setFixedSize(500, 500)
         self.grid.setStyleSheet("background-color: black; margin: 10px")
         layout.addWidget(self.grid)
@@ -144,10 +145,12 @@ class GenerateWindow(QMainWindow):
         # Save ground truth as CSV
         pd.DataFrame(grid_data).to_csv("ground_truth.csv", index=False, header=False)
         print(f"Saved ground truth of size {ground_truth_size} at ({x_grid}, {y_grid})")
-        self.make_diagnoses()
+      
 
         # Generate patient data using the scale factor
         generate_data.generate_patient_data(scale_factor=scale_factor)
+        self.make_diagnoses()
+        
         QMessageBox.information(self, "Success", "Data generation complete!  You can find them in the 'patient_data' folder, in the same path as this application.")
 
         self.save_button.setText("Generate more data? (This will overwrite previously generated data)")
@@ -180,10 +183,12 @@ class GenerateWindow(QMainWindow):
         overlap = np.sum((patient_data == 1) & ground_truth_mask)
         print("overlap:  ", overlap)
         #Total number of 1s in the ground truth region (this is 4x4 = 16)
-        total_ground_truth_ones = np.sum(ground_truth_mask)
-        print("total_ground_truth_ones:  ", total_ground_truth_ones)
+        #total_ground_truth_ones = np.sum(ground_truth_mask)
+        patient_mask = patient_data == 1
+        patient_ones = np.sum (patient_mask)
+        #print("total_ground_truth_ones:  ", total_ground_truth_ones)
         #Check if the overlap is greater than or equal to the threshold (50%)
-        overlap_percentage = overlap / total_ground_truth_ones
+        overlap_percentage = overlap / patient_ones
         print(f"Overlap percentage: {overlap_percentage}")
         print(f"Overlap threshold: {overlap_threshold}")
 
@@ -191,6 +196,8 @@ class GenerateWindow(QMainWindow):
             return 1
         else:
             return  0
+            
+            
     
     def make_diagnoses(self):
         df = pd.read_csv('patient_data/patients_data.csv', header=None)
@@ -201,15 +208,19 @@ class GenerateWindow(QMainWindow):
             #row_data = df.iloc[i].values[1:] test diff order for debugging note: are we accidentally excluding some patients by doing [1:] should it be [0:]
             row_data = df.iloc[i, 1:].values
             test = pd.DataFrame(row_data.reshape(50,50))
-            #print(f"Patient data shape: {test.shape}")
+            print(f"Patient data shape: {test.shape}")
+            print(test)
             #print(f"Ground truth shape: {df_ground_truth.shape}")
             temp_diagnosis = GenerateWindow.check_overlap(test, df_ground_truth, overlap_threshold=0.5)
             if temp_diagnosis == 1:
                 diagnosis.append(1)
+                print("patient number")
+                print(i)
+                print(test)
             else:
                 diagnosis.append(0)
             #print(test)
-            print(temp_diagnosis)
+            #print(temp_diagnosis)
            # Create a DataFrame for the diagnoses
         diagnoses_df = pd.DataFrame({'Diagnosis': diagnosis})
 

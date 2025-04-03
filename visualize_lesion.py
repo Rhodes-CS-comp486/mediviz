@@ -15,9 +15,7 @@ def visualize_patient(df, gt, patient_index, parent_window=None):
         try:
             patient_index = int(patient_index)
 
-            if patient_index >= len(df) or patient_index < 1:
-                print(patient_index>=len(df))
-                print(patient_index<1)
+            if patient_index >= len(df) or patient_index < 0:
                 raise ValueError()
             
         
