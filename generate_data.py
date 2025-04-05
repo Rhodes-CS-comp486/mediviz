@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import random
 
-def generate_patient_data(folder='patient_data', num_patients=1000, size=25, scale_factor=1):
+def generate_patient_data(folder='patient_data', num_patients=100, size=50, scale_factor=1):
     if not os.path.exists(folder):
         os.makedirs(folder)
 

@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import sys
 import os
+from svm_runner import SVMRunner
 
 class Algorithm(QMainWindow):
     def __init__(self, mode):
@@ -93,12 +94,12 @@ class ChooseUploader(QMainWindow):
         # Test & Train (should be diasabled until diagnosis and patient_data CSVs are uploaded)
         self.train_button = QPushButton("Train Algorithm")
         self.train_button.setEnabled(False)
-        self.train_button.clicked.connect(lambda: self.run_algorithm("Train"))
+        self.train_button.clicked.connect(self.train_algorithm)
         layout.addWidget(self.train_button)
 
         self.test_button = QPushButton("Test Algorithm")
         self.test_button.setEnabled(False)
-        self.test_button.clicked.connect(lambda: self.run_algorithm("Test"))
+        self.test_button.clicked.connect(self.test_algorithm)
         layout.addWidget(self.test_button)
 
         # Text Display for File Info
@@ -128,14 +129,17 @@ class ChooseUploader(QMainWindow):
         #self.train_button.clicked.connect(self.train_action)
         #self.test_button.clicked.connect(self.test_action)
 
-    #def train_action(self):
-    #    QMessageBox.information(self, "Success", "Algorithm trained successfully!")
+    def train_algorithm(self):
+       QMessageBox.information(self, "Success", "Algorithm trained successfully!")
+       print("Train button clicked")
+       svm = SVMRunner(self.patient_data_path, self.diagnosis_data_path)
+       train_results = SVMRunner.train_and_evaluate(svm) 
 
-        #print("Train button clicked")
-
-    #def test_action(self):
-    #    QMessageBox.information(self, "Success", "Algorithm tested successfully!")
-    #    print("Test button clicked")
+    def test_algorithm(self):
+       QMessageBox.information(self, "Success", "Algorithm tested successfully!")
+       print("Test button clicked")
+       svm = SVMRunner(self.patient_data_path, self.diagnosis_data_path)
+       test_results = SVMRunner.test(svm)
     
 
 
