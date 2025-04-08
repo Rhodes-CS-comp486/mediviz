@@ -44,6 +44,17 @@ class SVMRunner:
         with open(filename, 'rb') as file:
             model = pickle.load(file)
             return model
+    def save_model(self, filename='svm_model.pkl'):
+        """Saves the SVM model to a file."""
+        with open(filename, 'wb') as file:
+            pickle.dump(self.model, file)
+    def load_model(self, filename='svm_model.pkl'):
+        """Loads the SVM model from a file."""
+        if not os.path.exists(filename):
+            return False
+        with open(filename, 'rb') as file:
+            self.model = pickle.load(file)
+        return self.model
     
 
 
