@@ -4,30 +4,31 @@ import pandas as pd
 import sys
 import os
 from generate import GenerateWindow
+from algorithm import ChooseUploader
 
 
 class CSVUploader(QMainWindow):
     def __init__(self):  
         super().__init__()
-        self.setWindowTitle("CSV File Uploader")
-        self.setGeometry(500,500,600,400)
+        self.setWindowTitle("Patient Data Loader")
+        self.setGeometry(500, 500, 600, 400)
 
         # Layout and widgets
         layout = QVBoxLayout()
 
-        self.label = QLabel("No file selected", self)
+        self.label = QLabel("No folder selected", self)
         self.label.setStyleSheet("font-size: 16px; font-weight: bold; color: black; margin: 10px")
         self.label.setAlignment(Qt.AlignCenter)
-        layout.addWidget(self.label) 
+        layout.addWidget(self.label)
 
         self.status_label = QLabel("", self)
         self.status_label.setStyleSheet("font-size: 14px; font-weight: bold; color: green; margin: 10px")
         self.status_label.setAlignment(Qt.AlignCenter)
         layout.addWidget(self.status_label)
 
-        upload_button = QPushButton("Upload Folder", self)
-        upload_button.setStyleSheet("background-color:  #B7BFC7; font-size: 16px; font-weight: bold; color: black; padding: 10px; hover {background-color: #A4ABB3;}")
-        upload_button.clicked.connect(self.upload_folder)
+        upload_button = QPushButton("Upload Data for ML Alg?", self)
+        upload_button.setStyleSheet("background-color:  #B7BFC7; font-size: 16px; font-weight: bold; color: black; padding: 10px;")
+        upload_button.clicked.connect(self.run_algorithm) # used to be self.upload_folder
         layout.addWidget(upload_button)
         
         generate_button = QPushButton("Generate Data", self)
@@ -35,16 +36,17 @@ class CSVUploader(QMainWindow):
         generate_button.clicked.connect(self.generate_data)
         layout.addWidget(generate_button)
 
+        self.text_display = QTextEdit(self)
+        self.text_display.setReadOnly(True)
+        self.text_display.setStyleSheet("background-color: #F6FBFC; color: black; font-size: 12px; font-weight: normal; padding: 10px; margin: 10px")
+        layout.addWidget(self.text_display)
+
         # Container 
         container = QWidget()
         container.setLayout(layout)
         container.setStyleSheet("background-color: #E2E5E8;")
         self.setCentralWidget(container)
 
-        self.text_display = QTextEdit(self)
-        self.text_display.setReadOnly(True)
-        self.text_display.setStyleSheet("background-color: #F6FBFC; color: black; font-size: 12px; font-weight: normal; padding: 10px; margin: 10px")
-        layout.addWidget(self.text_display)
 
     def upload_folder(self): 
         folder_path = QFileDialog.getExistingDirectory(self, "Select Folder")
@@ -90,6 +92,10 @@ class CSVUploader(QMainWindow):
         self.generate_window.show()
         
 
+    def run_algorithm(self):
+        """Opens the algorithm window."""
+        self.algorithm_window = ChooseUploader()
+        self.algorithm_window.show()
 app = QApplication(sys.argv)
 window = CSVUploader()
 window.show()
