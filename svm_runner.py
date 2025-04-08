@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn.svm import SVC
 from sklearn.metrics import classification_report
+from sklearn.model_selection import train_test_split
 import csv
 import os
 import pickle
@@ -23,15 +24,20 @@ class SVMRunner:
             self.diagnoses  = diagnoses[1:].ravel() #just turns it into the correct structure for the model to run
 
 
-    def train_and_evaluate(self):
+    def train_and_test(self):
         """Trains an SVM model and prints the classification report."""
         if len(set(self.diagnoses)) < 2:
             return "Error: At least one sample from each class (0 and 1) is required."
-        self.model.fit(self.patient_matrices, self.diagnoses)
-        predictions = self.model.predict(self.patient_matrices)
+        
+        # Split the data into training and testing sets
+        patient_train, patient_test, diagnosis_train, diagnosis_test = train_test_split(self.patient_matrices, self.diagnoses, test_size=0.2, random_state=42)
+        self.model.fit(self.patient_train, self.diagnoses)
+        predictions_train = self.model.predict(self.patient_train)
+
+        predictions_test = self.model.predict(self.patient_test)
         with open('svm_model.pkl', 'wb') as file:
             pickle.dump(self.model,file)
-        return classification_report(self.diagnoses, predictions)
+        return classification_report(self.diagnoses, predictions_train), classification_report(diagnosis_test, predictions_test)
     
     def test(self, test_data):
         """Tests the SVM model on new data and returns the predictions."""
@@ -75,17 +81,17 @@ class SVMRunner:
 #     return self.model.predict(self.patient_matrices)
 
 
-with open('patient_data/patients_data.csv', 'r') as file:
-    csv_reader = csv.reader(file)
-    patients = list(csv_reader)
-    patients = np.array(patients)
-    patients = patients[1:, 1:]
+# with open('patient_data/patients_data.csv', 'r') as file:
+#     csv_reader = csv.reader(file)
+#     patients = list(csv_reader)
+#     patients = np.array(patients)
+#     patients = patients[1:, 1:]
 
-with open('diagnoses.csv', 'r') as file:
-    csv_reader = csv.reader(file)
-    diagnoses = list(csv_reader)
-    diagnoses = np.array(diagnoses)
-    diagnoses  = diagnoses[1:].ravel() #just turns it into the correct structure for the model to run
+# with open('diagnoses.csv', 'r') as file:
+#     csv_reader = csv.reader(file)
+#     diagnoses = list(csv_reader)
+#     diagnoses = np.array(diagnoses)
+#     diagnoses  = diagnoses[1:].ravel() #just turns it into the correct structure for the model to run
 
 
 # # print(f"Shape of patients: {patients.shape}")
