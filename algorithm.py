@@ -94,7 +94,7 @@ class ChooseUploader(QMainWindow):
         # Test & Train (should be diasabled until diagnosis and patient_data CSVs are uploaded)
         self.train_button = QPushButton("Train Algorithm")
         self.train_button.setEnabled(False)
-        self.train_button.clicked.connect(self.train_algorithm)
+        self.train_button.clicked.connect(self.train_and_test_algorithm)
         layout.addWidget(self.train_button)
 
         self.test_button = QPushButton("Test Algorithm")

@@ -11,6 +11,7 @@ class SVMRunner:
         self.patient_matrices = np.array(patient_matrices) #THIS SHOULD BE CHANGED..... each row could be moved into a dataframe later?   idk what structure it will enter as
         self.diagnoses = np.array(diagnoses)
         self.model = SVC(kernel='linear')
+        self.report = None
         with open(patient_matrices, 'r') as file:
             csv_reader = csv.reader(file)
             patients = list(csv_reader)
@@ -31,13 +32,11 @@ class SVMRunner:
         
         # Split the data into training and testing sets
         patient_train, patient_test, diagnosis_train, diagnosis_test = train_test_split(self.patient_matrices, self.diagnoses, test_size=0.2, random_state=42)
-        self.model.fit(self.patient_train, self.diagnoses)
-        predictions_train = self.model.predict(self.patient_train)
-
-        predictions_test = self.model.predict(self.patient_test)
-        with open('svm_model.pkl', 'wb') as file:
-            pickle.dump(self.model,file)
-        return classification_report(self.diagnoses, predictions_train), classification_report(diagnosis_test, predictions_test)
+        self.model.fit(patient_train, diagnosis_train)
+        predictions_train = self.model.predict(patient_train)
+        predictions_test = self.model.predict(patient_test)
+        self.report = classification_report(diagnosis_test, predictions_test)
+        return self.report
     
     def test(self, test_data):
         """Tests the SVM model on new data and returns the predictions."""
