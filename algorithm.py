@@ -15,7 +15,7 @@ class Algorithm(QMainWindow):
         #Layout
         layout = QVBoxLayout()
 
-        self.label - QLabel(f"Running Algorithm Mode: {mode}", self)
+        self.label = QLabel(f"Running Algorithm Mode: {mode}", self)
         self.label.setAlignment(Qt.AlignCenter)
         layout.addWidget(self.label)
 
@@ -136,8 +136,9 @@ class ChooseUploader(QMainWindow):
        train_results = SVMRunner.train_and_evaluate(svm) 
        print(train_results)
        self.save_button = QPushButton("Save Trained Model")
-       self.save_button.clicked.connect(self.save_model)
        self.centralWidget().layout().addWidget(self.save_button)
+       self.save_button.clicked.connect(lambda: self.save_model(svm))
+    
 
     def test_algorithm(self):
        QMessageBox.information(self, "Success", "Algorithm tested successfully!")
@@ -145,6 +146,14 @@ class ChooseUploader(QMainWindow):
        svm = SVMRunner(self.patient_data_path, self.diagnosis_data_path)
        test_results = SVMRunner.test(svm)
     
+    def save_model(self, svm):
+        name = svm.save_model()
+        
+        QMessageBox.information(
+        self,
+        "Saved",
+        f"Model saved successfully!\nSaved as: {name}"
+    )
 
 
 
