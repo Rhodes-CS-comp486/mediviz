@@ -10,6 +10,7 @@ class SVMRunner:
         self.patient_matrices = np.array(patient_matrices) #THIS SHOULD BE CHANGED..... each row could be moved into a dataframe later?   idk what structure it will enter as
         self.diagnoses = np.array(diagnoses)
         self.model = SVC(kernel='linear')
+        self.report = None
         with open(patient_matrices, 'r') as file:
             csv_reader = csv.reader(file)
             patients = list(csv_reader)
@@ -29,9 +30,8 @@ class SVMRunner:
             return "Error: At least one sample from each class (0 and 1) is required."
         self.model.fit(self.patient_matrices, self.diagnoses)
         predictions = self.model.predict(self.patient_matrices)
-        with open('svm_model.pkl', 'wb') as file:
-            pickle.dump(self.model,file)
-        return classification_report(self.diagnoses, predictions)
+        self.report = classification_report(self.diagnoses, predictions)
+        return self.report
     
     def test(self, test_data):
         """Tests the SVM model on new data and returns the predictions."""
@@ -44,6 +44,25 @@ class SVMRunner:
         with open(filename, 'rb') as file:
             model = pickle.load(file)
             return model
+    def filename_creation(self):    
+        
+        """Creates a filename for the SVM model based on the current date and time."""
+        from datetime import datetime
+        now = datetime.now()
+        return f"svm_model_{now.strftime('%Y%m%d_%H%M%S')}.pkl"
+    def save_model(self):
+        filename = self.filename_creation()
+        """Saves the SVM model to a file."""
+        with open(filename, 'wb') as file:
+            pickle.dump(self.model, file)
+        return filename
+    def load_model(self, filename):
+        """Loads the SVM model from a file."""
+        if not os.path.exists(filename):
+            return False
+        with open(filename, 'rb') as file:
+            self.model = pickle.load(file)
+        return self.model
     
 
 
