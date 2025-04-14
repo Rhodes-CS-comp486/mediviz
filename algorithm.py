@@ -135,6 +135,9 @@ class ChooseUploader(QMainWindow):
        svm = SVMRunner(self.patient_data_path, self.diagnosis_data_path)
        train_results = SVMRunner.train_and_evaluate(svm) 
        print(train_results)
+       self.save_button = QPushButton("Save Trained Model")
+       self.save_button.clicked.connect(self.save_model)
+       self.centralWidget().layout().addWidget(self.save_button)
 
     def test_algorithm(self):
        QMessageBox.information(self, "Success", "Algorithm tested successfully!")
