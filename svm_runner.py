@@ -7,10 +7,13 @@ import os
 import pickle
 
 class SVMRunner:
-    def __init__(self, patient_matrices, diagnoses):
+    def __init__(self, patient_matrices, diagnoses, model=None):
         self.patient_matrices = np.array(patient_matrices) #THIS SHOULD BE CHANGED..... each row could be moved into a dataframe later?   idk what structure it will enter as
         self.diagnoses = np.array(diagnoses)
-        self.model = SVC(kernel='linear')
+        if model is not None:
+            self.model = model
+        else:
+            self.model = SVC(kernel='linear')
         self.report = None
         with open(patient_matrices, 'r') as file:
             csv_reader = csv.reader(file)
@@ -38,7 +41,7 @@ class SVMRunner:
         self.report = classification_report(diagnosis_test, predictions_test)
         return self.report
     
-    def test(self, test_data):
+    def test(self):
         """Tests the SVM model on new data and returns the predictions."""
         return self.model.predict(self.patient_matrices)
     
