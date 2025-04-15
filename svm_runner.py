@@ -1,4 +1,6 @@
 import numpy as np
+import tkinter as tk
+from tkinter import filedialog
 from sklearn.svm import SVC
 from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
@@ -43,6 +45,26 @@ class SVMRunner:
     
     def test(self):
         """Tests the SVM model on new data and returns the predictions."""
+        # Open a file dialog to select a .pkl file
+        root = tk.Tk()
+        root.withdraw()
+        filename = filedialog.askopenfilename(
+            title="Select a Pickle File",
+            filetypes=[("Pickle files", "*.pkl")]
+        )
+        if not filename:
+            print("No file selected.")
+            return "No model loaded."
+        
+        #Load the model
+        try:
+            with open(filename, 'rb') as file:
+                self.model = pickle.load(file)
+            print(f"Model loaded from {filename}")
+        except Exception as e:
+            return f"Error loading model: {e}"
+        
+        #Run prediction
         return self.model.predict(self.patient_matrices)
     
     def load_trained_model(filename='svm_model.pkl'):
