@@ -52,6 +52,7 @@ class SVMRunner:
             title="Select a Pickle File",
             filetypes=[("Pickle files", "*.pkl")]
         )
+        root.destroy()
         if not filename:
             print("No file selected.")
             return "No model loaded."

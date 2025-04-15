@@ -155,7 +155,6 @@ class ChooseUploader(QMainWindow):
        test_results = SVMRunner.test(svm)
        QMessageBox.information(self, "Success", "Algorithm tested successfully!")
        print(test_results)
-       test_results = SVMRunner.test(svm) 
        self.show_results_button.setVisible(True)
        self.last_report = test_results
        self.last_y_true = svm.diagnoses
