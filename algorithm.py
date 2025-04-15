@@ -5,6 +5,7 @@ import numpy as np
 import sys
 import os
 from svm_runner import SVMRunner
+from results_dashboard import ResultsWindow
 
 class Algorithm(QMainWindow):
     def __init__(self, mode):
@@ -111,7 +112,11 @@ class ChooseUploader(QMainWindow):
         container = QWidget()
         container.setLayout(layout)
         self.setCentralWidget(container)
-
+        
+        self.show_results_button = QPushButton("Visualize Results")
+        self.show_results_button.setVisible(False)
+        self.show_results_button.clicked.connect(self.show_results)
+        layout.addWidget(self.show_results_button)
 
 
         # Create buttons
@@ -134,6 +139,10 @@ class ChooseUploader(QMainWindow):
        print("Train button clicked")
        svm = SVMRunner(self.patient_data_path, self.diagnosis_data_path)
        train_results = SVMRunner.train_and_test(svm) 
+       self.show_results_button.setVisible(True)
+       self.last_report = train_results
+       self.last_y_true = svm.diagnoses
+       self.last_y_pred = svm.model.predict(svm.patient_matrices)
        print(train_results)
        self.save_button = QPushButton("Save Trained Model")
        self.centralWidget().layout().addWidget(self.save_button)
@@ -146,7 +155,16 @@ class ChooseUploader(QMainWindow):
        test_results = SVMRunner.test(svm)
        QMessageBox.information(self, "Success", "Algorithm tested successfully!")
        print(test_results)
+       test_results = SVMRunner.test(svm) 
+       self.show_results_button.setVisible(True)
+       self.last_report = test_results
+       self.last_y_true = svm.diagnoses
+       self.last_y_pred = svm.model.predict(svm.patient_matrices)
+       
     
+    def show_results(self):
+        self.results_window = ResultsWindow(self.last_report, self.last_y_true, self.last_y_pred)
+        self.results_window.show()
     def save_model(self, svm):
         name = svm.save_model()
         
