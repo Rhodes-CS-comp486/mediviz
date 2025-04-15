@@ -16,6 +16,11 @@ class CSVUploader(QMainWindow):
         # Layout and widgets
         layout = QVBoxLayout()
 
+        welcome_label = QLabel("MediViz")
+        welcome_label.setAlignment(Qt.AlignCenter)
+        welcome_label.setStyleSheet("font-size:30px; font-weight:bold; color: #333333; margin-top: 10px;")
+        layout.addWidget(welcome_label)
+
         self.label = QLabel("No folder selected", self)
         self.label.setStyleSheet("font-size: 16px; font-weight: bold; color: black; margin: 10px")
         self.label.setAlignment(Qt.AlignCenter)
@@ -26,8 +31,16 @@ class CSVUploader(QMainWindow):
         self.status_label.setAlignment(Qt.AlignCenter)
         layout.addWidget(self.status_label)
 
-        upload_button = QPushButton("Upload Data for ML Alg?", self)
-        upload_button.setStyleSheet("background-color:  #B7BFC7; font-size: 16px; font-weight: bold; color: black; padding: 10px;")
+        upload_button = QPushButton("Upload Data and Run Algorithm", self)
+        upload_button.setStyleSheet("""QPushButton{background-color:rgb(175, 193, 210); 
+                                    font-family: "font-size: 16px; 
+                                    font-weight: bold; 
+                                    color: black; 
+                                    padding: 10px 20px; 
+                                    border: 1px solid #e0e0e0
+                                    } 
+                                    QPushButton:hover{background-color: #F5F8F9
+                                    }""")
         upload_button.clicked.connect(self.run_algorithm) # used to be self.upload_folder
         layout.addWidget(upload_button)
         
@@ -36,10 +49,10 @@ class CSVUploader(QMainWindow):
         generate_button.clicked.connect(self.generate_data)
         layout.addWidget(generate_button)
 
-        self.text_display = QTextEdit(self)
-        self.text_display.setReadOnly(True)
-        self.text_display.setStyleSheet("background-color: #F6FBFC; color: black; font-size: 12px; font-weight: normal; padding: 10px; margin: 10px")
-        layout.addWidget(self.text_display)
+        #self.text_display = QTextEdit(self)
+        #self.text_display.setReadOnly(True)
+        #self.text_display.setStyleSheet("background-color: #F6FBFC; color: black; font-size: 12px; font-weight: normal; padding: 10px; margin: 10px")
+        #layout.addWidget(self.text_display)
 
         # Container 
         container = QWidget()
