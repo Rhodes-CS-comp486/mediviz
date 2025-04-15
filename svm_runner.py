@@ -63,9 +63,9 @@ class SVMRunner:
             print(f"Model loaded from {filename}")
         except Exception as e:
             return f"Error loading model: {e}"
-        
+        prediction = self.model.predict(self.patient_matrices)
         #Run prediction
-        return self.model.predict(self.patient_matrices)
+        return classification_report(self.diagnoses, prediction)
     
     def load_trained_model(filename='svm_model.pkl'):
         """Loads the SVM model from a file."""

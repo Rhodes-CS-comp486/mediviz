@@ -137,12 +137,11 @@ class ChooseUploader(QMainWindow):
        print(train_results)
 
     def test_algorithm(self):
-       QMessageBox.information(self, "Success", "Algorithm tested successfully!")
        print("Test button clicked")
        svm = SVMRunner(self.patient_data_path, self.diagnosis_data_path)
        test_results = SVMRunner.test(svm)
-    
-
+       QMessageBox.information(self, "Success", "Algorithm tested successfully!")
+       print(test_results)
 
 
     #def train_algorithm(self):
