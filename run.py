@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget, QFileDialog, QLabel, QTextEdit
+from PySide6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget, QFileDialog, QLabel, QTextEdit, QHBoxLayout, QStackedWidget
 from PySide6.QtCore import Qt
 import pandas as pd
 import sys
@@ -8,46 +8,101 @@ from algorithm import ChooseUploader
 
 
 class CSVUploader(QMainWindow):
-    def __init__(self):  
+    def __init__(self, stacked_widget):  
         super().__init__()
         self.setWindowTitle("Patient Data Loader")
         self.setGeometry(500, 500, 600, 400)
+        self.stacked_widget = stacked_widget
 
         # Layout and widgets
         layout = QVBoxLayout()
+        layout.setAlignment(Qt.AlignTop)
 
-        welcome_label = QLabel("MediViz")
-        welcome_label.setAlignment(Qt.AlignCenter)
-        welcome_label.setStyleSheet("font-size:30px; font-weight:bold; color: #333333; margin-top: 10px;")
-        layout.addWidget(welcome_label)
+        welcome_layout = QVBoxLayout()
+        welcome_layout.setSpacing(0)
 
-        self.label = QLabel("No folder selected", self)
-        self.label.setStyleSheet("font-size: 16px; font-weight: bold; color: black; margin: 10px")
-        self.label.setAlignment(Qt.AlignCenter)
-        layout.addWidget(self.label)
+        welcome_label1 = QLabel("welcome to")
+        welcome_label1.setAlignment(Qt.AlignCenter)
+        welcome_label1.setStyleSheet("font-size:15px; font-weight:bold; color: rgb(43, 85, 122);")
+        welcome_layout.addWidget(welcome_label1)
 
-        self.status_label = QLabel("", self)
-        self.status_label.setStyleSheet("font-size: 14px; font-weight: bold; color: green; margin: 10px")
-        self.status_label.setAlignment(Qt.AlignCenter)
-        layout.addWidget(self.status_label)
+        welcome_label2 = QLabel("MediViz")
+        welcome_label2.setAlignment(Qt.AlignCenter)
+        welcome_label2.setStyleSheet("font-size:45px; font-weight:bold; color:rgb(28, 57, 82);")
+        welcome_layout.setContentsMargins(0,0,0,40)
+        welcome_layout.addWidget(welcome_label2)
+
+        layout.addLayout(welcome_layout)
+
+
+        #descrip = QTextEdit()
+        #descrip.setReadOnly(True)
+        #descrip.setStyleSheet("font-size: 12px; color:rgb(43, 85, 122);")
+        #descrip.setText(
+        #    "How to use...\n\n"
+        #    "1. If you have your own data, select 'Upload Data and Run Algorithm'."
+        #    "2. If you would like to generate synthetic data, select 'Generate Data'."
+        #    "3. Once the data has been generated, you can then upload it and run the algorithm."
+        #)
+        #layout.addWidget(descrip)
+
+        faq_button = QPushButton("Instructions and FAQs", self)
+        faq_button.setStyleSheet("""QPushButton{background-color: rgb(162, 191, 215); 
+                                        font-size: 16px; 
+                                        font-weight: bold; 
+                                        color: black; 
+                                        padding: 10px; 
+                                        border: 1px solid #e0e0e0}
+                                        QPushButton:hover{background-color: #F5F8F9
+                                        }""")
+        faq_button.clicked.connect(self.faq_page)
+        layout.addWidget(faq_button)
+        
+        button_layout = QHBoxLayout()
+        button_layout.setSpacing(10)
+        button_layout.setAlignment(Qt.AlignCenter)
+
 
         upload_button = QPushButton("Upload Data and Run Algorithm", self)
-        upload_button.setStyleSheet("""QPushButton{background-color:rgb(175, 193, 210); 
-                                    font-family: "font-size: 16px; 
+        upload_button.setFixedWidth(350)
+        upload_button.setStyleSheet("""QPushButton{background-color:rgb(118, 149, 177); 
+                                    font-size: 16px; 
                                     font-weight: bold; 
                                     color: black; 
-                                    padding: 10px 20px; 
+                                    padding: 10px; 
                                     border: 1px solid #e0e0e0
                                     } 
                                     QPushButton:hover{background-color: #F5F8F9
                                     }""")
         upload_button.clicked.connect(self.run_algorithm) # used to be self.upload_folder
-        layout.addWidget(upload_button)
+        button_layout.addWidget(upload_button)
         
         generate_button = QPushButton("Generate Data", self)
-        generate_button.setStyleSheet("background-color:  #B7BFC7; font-size: 16px; font-weight: bold; color: black; padding: 10px; hover {background-color: #A4ABB3;}")
+        generate_button.setFixedWidth(350)
+        generate_button.setStyleSheet("""QPushButton{background-color: rgb(118, 149, 177); 
+                                        font-size: 16px; 
+                                        font-weight: bold; 
+                                        color: black; 
+                                        padding: 10px; 
+                                        border: 1px solid #e0e0e0}
+                                        QPushButton:hover{background-color: #F5F8F9
+                                        }""")
         generate_button.clicked.connect(self.generate_data)
-        layout.addWidget(generate_button)
+        button_layout.addWidget(generate_button)
+
+        layout.addLayout(button_layout)
+
+        
+
+        #self.label = QLabel("(No Folder Selected)", self)
+        #self.label.setStyleSheet("font-size: 16px; font-weight: bold; color: black; margin: 10px")
+        #self.label.setAlignment(Qt.AlignCenter)
+        #layout.addWidget(self.label)
+
+        #self.status_label = QLabel("", self)
+        #self.status_label.setStyleSheet("font-size: 14px; font-weight: bold; color: green; margin: 10px")
+        #self.status_label.setAlignment(Qt.AlignCenter)
+        #layout.addWidget(self.status_label)
 
         #self.text_display = QTextEdit(self)
         #self.text_display.setReadOnly(True)
@@ -57,7 +112,7 @@ class CSVUploader(QMainWindow):
         # Container 
         container = QWidget()
         container.setLayout(layout)
-        container.setStyleSheet("background-color: #E2E5E8;")
+        container.setStyleSheet("background-color: rgb(255,255,255);")
         self.setCentralWidget(container)
 
 
@@ -109,7 +164,69 @@ class CSVUploader(QMainWindow):
         """Opens the algorithm window."""
         self.algorithm_window = ChooseUploader()
         self.algorithm_window.show()
+
+    def faq_page(self):
+        self.stacked_widget.setCurrentIndex(1)
+
+class FAQ_Page(QWidget):
+    def __init__(self, stacked_widget):
+        super().__init__()
+        self.stacked_widget = stacked_widget
+        layout = QVBoxLayout()
+
+        top_row_layout = QHBoxLayout()
+        top_row_layout.setAlignment(Qt.AlignTop)
+
+        back_button = QPushButton("Back to Home")
+        back_button.setFixedWidth(125)
+        back_button.clicked.connect(self.go_to_home)
+        top_row_layout.addWidget(back_button, alignment=Qt.AlignLeft)
+
+        layout.addLayout(top_row_layout)
+
+        second_row_layout = QHBoxLayout()
+        
+
+        header_layout = QVBoxLayout()
+        header_layout.setSpacing(0)
+        header_layout.setContentsMargins(0,0,0,0)
+
+        header_label1 = QLabel("MediViz")
+        header_label1.setAlignment(Qt.AlignHCenter)
+        header_label1.setStyleSheet("font-size:45px; font-weight:bold; color:rgb(28, 57, 82);")
+        header_layout.addWidget(header_label1)
+
+        header_label2 = QLabel("MediViz Instructions and Frequently Asked Questions")
+        header_label2.setAlignment(Qt.AlignHCenter)
+        header_label2.setStyleSheet("font-size:15px; font-weight:bold; color: rgb(43, 85, 122);")
+        header_layout.addWidget(header_label2)
+
+        second_row_layout.setAlignment(Qt.AlignHCenter)
+        second_row_layout.addLayout(header_layout)
+        layout.addLayout(second_row_layout)
+
+        instruc = QLabel("1) Do you have patient data?\n  --> If yes, then select 'Upload Data and Run Algorithm'.\n  --> If no, then select 'Generate Data' to create synthetic patient data. \n\n2) Once you have generated data, go back and select 'Upload Data and Run Algorithm'."
+        )
+        instruc.setAlignment(Qt.AlignLeft)
+        instruc.setContentsMargins(20,0,0,0)
+        instruc.setStyleSheet("font-size:12px; color:rgb(0, 0, 0)")
+        layout.addWidget(instruc)
+
+        self.setLayout(layout)
+    
+    def go_to_home(self):
+        self.stacked_widget.setCurrentIndex(0)
+
 app = QApplication(sys.argv)
-window = CSVUploader()
-window.show()
+# Create multiple pages in the same window
+stacked_widget = QStackedWidget()
+main_window = CSVUploader(stacked_widget)
+faq_page = FAQ_Page(stacked_widget)
+stacked_widget.addWidget(main_window)
+stacked_widget.addWidget(faq_page)
+stacked_widget.setCurrentIndex(0)
+# Show window
+stacked_widget.show()
 sys.exit(app.exec())
+
+
