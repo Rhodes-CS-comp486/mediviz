@@ -6,15 +6,18 @@ from PySide6.QtCore import Qt
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd 
+import re
 
 class ResultsWindow(QMainWindow):
-    def __init__(self, report_text, y_true=None, y_pred=None):
+    def __init__(self, report_text, y_true=None, y_pred=None, model=None):
         super().__init__()
         self.setWindowTitle("SVM Results Dashboard")
         self.setGeometry(500, 500, 700, 500)
         self.y_true = y_true
         self.y_pred = y_pred
         self.report_text = report_text
+        self.model = model
 
         layout = QVBoxLayout()
 
@@ -37,14 +40,23 @@ class ResultsWindow(QMainWindow):
             cm_button = QPushButton("Show Confusion Matrix")
             cm_button.clicked.connect(self.show_confusion_matrix)
             layout.addWidget(cm_button)
+        
+        hm_button = QPushButton("Show Voxel Weight Heatmap")
+        hm_button.clicked.connect(self.show_heatmap)
+        layout.addWidget(hm_button)
 
         container = QWidget()
         container.setLayout(layout)
         self.setCentralWidget(container)
 
     def populate_table(self, report):
+        
+
         lines = [line.strip() for line in report.strip().split('\n') if line.strip()]
-        header = lines[0].split()
+
+        # Detect header row
+        header_match = re.findall(r'\S+', lines[0])
+        header = header_match
         data_lines = lines[1:]
 
         self.table.setColumnCount(len(header) + 1)
@@ -52,17 +64,23 @@ class ResultsWindow(QMainWindow):
         self.table.setHorizontalHeaderLabels([""] + header)
 
         for row_idx, line in enumerate(data_lines):
-            parts = line.split()
-            row_label = parts[0]
-            values = parts[1:]
+            # Use regex to split line into label and values
+            match = re.match(r'(\D+?)\s+([\d\.]+\s+[\d\.]+\s+[\d\.]+\s+[\d\.]+)', line)
+            if match:
+                label = match.group(1).strip()
+                values = match.group(2).split()
+            else:
+                parts = line.split()
+                label = parts[0]
+                values = parts[1:]
 
-            self.table.setItem(row_idx, 0, QTableWidgetItem(row_label))
+            self.table.setItem(row_idx, 0, QTableWidgetItem(label))
 
             for col_idx, value in enumerate(values):
                 item = QTableWidgetItem(value)
                 item.setTextAlignment(Qt.AlignCenter)
 
-                # Color coding based on value
+                # Color coding
                 try:
                     float_val = float(value)
                     if float_val >= 0.9:
@@ -70,28 +88,28 @@ class ResultsWindow(QMainWindow):
                     elif float_val < 0.6:
                         item.setBackground(Qt.red)
                 except:
-                    pass  # For labels like "accuracy", etc.
+                    pass
 
                 self.table.setItem(row_idx, col_idx + 1, item)
 
-        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.table.verticalHeader().setVisible(False)
-        self.table.setStyleSheet("""
-            QTableWidget {
-                border: 1px solid #ccc;
-                font-size: 14px;
-                background-color: #1e1e1e;
-                color: white;
-            }
-            QHeaderView::section {
-                background-color: #2b2b2b;
-                color: white;
-                font-weight: bold;
-                border: 1px solid #555;
-                padding: 4px;
-            }
-        """)
-        
+                self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+                self.table.verticalHeader().setVisible(False)
+                self.table.setStyleSheet("""
+                    QTableWidget {
+                        border: 1px solid #ccc;
+                        font-size: 14px;
+                        background-color: #1e1e1e;
+                        color: white;
+                    }
+                    QHeaderView::section {
+                        background-color: #2b2b2b;
+                        color: white;
+                        font-weight: bold;
+                        border: 1px solid #555;
+                        padding: 4px;
+                    }
+                """)
+                
     def export_to_csv(self):
         save_path, _ = QFileDialog.getSaveFileName(self, "Save Report", "svm_report.csv", "CSV Files (*.csv)")
         if not save_path:
@@ -122,3 +140,46 @@ class ResultsWindow(QMainWindow):
         disp.plot(cmap=plt.cm.Blues)
         plt.title("Confusion Matrix")
         plt.show()
+        
+    def show_heatmap(self):
+        if self.model is None:
+            QMessageBox.warning(self, "Missing Model", "No Model Selected")
+            return
+        
+        try: 
+            if hasattr(self.model, 'coef_'):
+                gt_path = "ground_truth.csv"
+                ground_truth = pd.read_csv(gt_path, header = None).values 
+                
+                weights = self.model.coef_[0]
+                heatmap = weights.reshape((50,50))
+                
+                plt.figure(figsize=(6,5))
+                
+                #switch between hot / seismic for heatmap?
+                heatmap_im = plt.imshow(heatmap, cmap='hot', interpolation='nearest')
+                
+                #Lay groundtruth onto heatmap 
+                plt.contour(ground_truth, levels=[0.5], colors='blue', linewidths=1.5)
+                
+                plt.colorbar(heatmap_im)
+                plt.title("SVM Weights Heatmap")
+                plt.xlabel("X axis", fontsize=12)
+                plt.ylabel("Y axis", fontsize=12)
+                
+                """
+                #Add grid lines
+                plt.grid(visible=True, color='gray', linewidth=0.2)
+                plt.xticks(np.arange(0,50,5))
+                plt.yticks(np.arange(0,50,5))
+                plt.gca().set_xticks(np.arange(-.5, 50, 1), minor=True)
+                plt.gca().set_yticks(np.arange(-.5, 50, 1), minor=True)
+                plt.grid(which='minor', color='lightgray', linestyle='-', linewidth=0.3)
+                        """
+                
+                plt.tight_layout()
+                plt.show()
+            else: 
+                QMessageBox.warning(self, "Error", "Error Generating Heatmap")
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"Failed to generate heatmap: {e}")

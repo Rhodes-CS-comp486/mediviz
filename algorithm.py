@@ -147,6 +147,7 @@ class ChooseUploader(QMainWindow):
        self.save_button = QPushButton("Save Trained Model")
        self.centralWidget().layout().addWidget(self.save_button)
        self.save_button.clicked.connect(lambda: self.save_model(svm))
+       self.svm_model = svm.model 
     
 
     def test_algorithm(self):
@@ -159,10 +160,11 @@ class ChooseUploader(QMainWindow):
        self.last_report = test_results
        self.last_y_true = svm.diagnoses
        self.last_y_pred = svm.model.predict(svm.patient_matrices)
+       self.svm_model = svm.model
        
     
     def show_results(self):
-        self.results_window = ResultsWindow(self.last_report, self.last_y_true, self.last_y_pred)
+        self.results_window = ResultsWindow(self.last_report, self.last_y_true, self.last_y_pred, model=self.svm_model )
         self.results_window.show()
     def save_model(self, svm):
         name = svm.save_model()
