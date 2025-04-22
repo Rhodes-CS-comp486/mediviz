@@ -157,8 +157,14 @@ class ResultsWindow(QMainWindow):
                 plt.figure(figsize=(6,5))
                 
                 #switch between hot / seismic for heatmap?
-                heatmap_im = plt.imshow(heatmap, cmap='hot', interpolation='nearest')
-                
+                max_abs = np.max(np.abs(heatmap))  # Get the largest absolute weight
+                heatmap_im = plt.imshow(
+                    heatmap,
+                    cmap='seismic',
+                    interpolation='nearest',
+                    vmin=-max_abs,
+                    vmax=+max_abs
+                )
                 #Lay groundtruth onto heatmap 
                 plt.contour(ground_truth, levels=[0.5], colors='blue', linewidths=1.5)
                 
