@@ -42,7 +42,7 @@ class ResultsWindow(QMainWindow):
             layout.addWidget(cm_button)
         
         hm_button = QPushButton("Show Voxel Weight Heatmap")
-        hm_button.clicked.connect(self.show_heatmap)
+        hm_button.clicked.connect(lambda: self.show_heatmap())
         layout.addWidget(hm_button)
 
         container = QWidget()
@@ -148,7 +148,12 @@ class ResultsWindow(QMainWindow):
         
         try: 
             if hasattr(self.model, 'coef_'):
-                gt_path = "ground_truth.csv"
+                import os
+                # Get the directory this script is in
+                base_dir = os.path.dirname(os.path.abspath(__file__))
+
+                # Point to ground_truth.csv in the project root
+                gt_path = os.path.join(base_dir, "ground_truth.csv")
                 ground_truth = pd.read_csv(gt_path, header = None).values 
                 
                 weights = self.model.coef_[0]

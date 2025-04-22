@@ -21,7 +21,7 @@ class Algorithm(QMainWindow):
         layout.addWidget(self.label)
 
         #Run Button
-        self.run_button - QPushButton(f"Run {mode}")
+        self.run_button = QPushButton(f"Run {mode}")
         self.run_button.clicked.connect(self.run_algorithm)
         layout.addWidget(self.run_button)
 
