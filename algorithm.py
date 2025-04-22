@@ -29,50 +29,32 @@ class Algorithm(QMainWindow):
         container.setLayout(layout)
         self.setCentralWidget(container)
 
-class ChooseUploader(QMainWindow):
+######class ChooseUploader(QMainWindow)#######
+class ChooseUploader(QWidget):
     #def run_svm(self):
     #    QMessageBox.information(self, "Success", "ML Algorithm run successfully! ")
-    def run_algorithm(self, mode):
-            #Should Open RunAlgWindow in either Test or Train mode
-            self.algorithm_window = Algorithm(mode)
-            self.algorithm_window.show()
-
-    def update_status(self):
-            #Enables train and test buttons if CSVs are uploaded
-            if self.patient_data_path and self.diagnosis_data_path:
-                self.train_button.setEnabled(True)
-                self.test_button.setEnabled(True)
-                self.text_display.setText(
-                    f"✅ Both files uploaded! n\nPatient Data: {self.patient_data_path}\nDiagnosis Data: {self.diagnosis_data_path}"
-                )
-
-    def upload_file(self, file_type):
-            file_path, _ = QFileDialog.getOpenFileName(self, "Select CSV File", " ", "CSV Files (*.csv)")
-
-            if file_path:
-                file_name = os.path.basename(file_path)
-
-                if file_type == "patient":
-                    self.patient_data_path = file_path
-                    self.patient_label.setText(f"✅ Patient Data: {file_name}")
-                elif file_type == "diagnosis":
-                    self.diagnosis_data_path = file_path
-                    self.diagnosis_label.setText(f"✅ Diagnosis Data: {file_name}")
-
-                self.update_status()
-
-    def __init__(self):
+    
+    def go_to_home(self):
+        self.stacked_widget.setCurrentIndex(0)
+    
+    def __init__(self, stacked_widget):
         super().__init__()
-        self.setWindowTitle("Patient Data Loader")
-        self.setGeometry(400, 400, 400, 400)
+        self.stacked_widget = stacked_widget
+        #self.setWindowTitle("Patient Data Loader")
+        #self.setGeometry(400, 400, 400, 400)
 
         #uploaded files
         self.patient_data_path = None
         self.diagnosis_data_path = None
 
         # Layout
-        layout = QVBoxLayout()
+        self.layout = QVBoxLayout()
+        layout = self.layout
 
+        back_button = QPushButton("Back to Home")
+        back_button.setFixedWidth(125)
+        back_button.clicked.connect(self.go_to_home)
+        layout.addWidget(back_button)
 
         #Patient data Upload Point
         self.patient_label = QLabel("No Patient Data Selected", self)
@@ -109,16 +91,16 @@ class ChooseUploader(QMainWindow):
         layout.addWidget(self.text_display)
 
         #Creating a central widget NEWCODE
-        container = QWidget()
-        container.setLayout(layout)
-        self.setCentralWidget(container)
+        #container = QWidget()
+        #container.setLayout(layout)
+        #self.setCentralWidget(container)
         
         self.show_results_button = QPushButton("Visualize Results")
         self.show_results_button.setVisible(False)
         self.show_results_button.clicked.connect(self.show_results)
         layout.addWidget(self.show_results_button)
 
-
+        self.setLayout(layout)
         # Create buttons
         #self.train_button = QPushButton("Train")
         #self.test_button = QPushButton("Test")
@@ -133,6 +115,37 @@ class ChooseUploader(QMainWindow):
         # Connect buttons to functions
         #self.train_button.clicked.connect(self.train_action)
         #self.test_button.clicked.connect(self.test_action)
+    
+    def run_algorithm(self, mode):
+            #Should Open RunAlgWindow in either Test or Train mode
+            self.algorithm_window = Algorithm(mode)
+            self.algorithm_window.show()
+
+    def update_status(self):
+            #Enables train and test buttons if CSVs are uploaded
+            if self.patient_data_path and self.diagnosis_data_path:
+                self.train_button.setEnabled(True)
+                self.test_button.setEnabled(True)
+                self.text_display.setText(
+                    f"✅ Both files uploaded! n\nPatient Data: {self.patient_data_path}\nDiagnosis Data: {self.diagnosis_data_path}"
+                )
+
+    def upload_file(self, file_type):
+            file_path, _ = QFileDialog.getOpenFileName(self, "Select CSV File", " ", "CSV Files (*.csv)")
+
+            if file_path:
+                file_name = os.path.basename(file_path)
+
+                if file_type == "patient":
+                    self.patient_data_path = file_path
+                    self.patient_label.setText(f"✅ Patient Data: {file_name}")
+                elif file_type == "diagnosis":
+                    self.diagnosis_data_path = file_path
+                    self.diagnosis_label.setText(f"✅ Diagnosis Data: {file_name}")
+
+                self.update_status()
+
+    
 
     def train_algorithm(self):
        QMessageBox.information(self, "Success", "Algorithm trained successfully!")
@@ -145,7 +158,8 @@ class ChooseUploader(QMainWindow):
        self.last_y_pred = svm.model.predict(svm.patient_matrices)
        print(train_results)
        self.save_button = QPushButton("Save Trained Model")
-       self.centralWidget().layout().addWidget(self.save_button)
+       self.layout.addWidget(self.save_button)
+       self.show_results_button.setText("Visualize Training Results")
        self.save_button.clicked.connect(lambda: self.save_model(svm))
     
 
@@ -158,14 +172,15 @@ class ChooseUploader(QMainWindow):
        self.last_report = test_results
        self.last_y_true = svm.diagnoses
        self.last_y_pred = svm.model.predict(svm.patient_matrices)
+       self.show_results_button.setText("Visualize Testing Results")
        
     
     def show_results(self):
         self.results_window = ResultsWindow(self.last_report, self.last_y_true, self.last_y_pred)
         self.results_window.show()
+    
     def save_model(self, svm):
         name = svm.save_model()
-        
         QMessageBox.information(
         self,
         "Saved",

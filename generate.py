@@ -1,57 +1,70 @@
-from PySide6.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QLabel, QComboBox, QPushButton, QSlider, QFrame, QMessageBox
+from PySide6.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QLabel, QComboBox, QPushButton, QSlider, QFrame, QMessageBox, QScrollArea
 from PySide6.QtCore import Qt
 import pandas as pd 
 import numpy as np
 import generate_data
 from visualize import VisualizeWindow
 
-class GenerateWindow(QMainWindow):
-    def __init__(self):
+class GenerateWindow(QWidget):
+    def go_to_home(self):
+        self.stacked_widget.setCurrentIndex(0)
+    
+    def __init__(self, stacked_widget):
         super().__init__()
-        self.setWindowTitle("Generate Data")
-        self.setGeometry(400, 400, 400, 400)
+        self.stacked_widget = stacked_widget
+        #self.setWindowTitle("Generate Data")
+        #self.setGeometry(400, 400, 400, 400)
 
         # Layout
-        layout = QVBoxLayout()
+        main_layout = QVBoxLayout()
+        main_layout.setAlignment(Qt.AlignTop)
+        main_layout.setContentsMargins(20, 20, 20, 20)
+        main_layout.setSpacing(15)
 
-        self.label = QLabel("Select options for data generation:", self)
-        self.label.setAlignment(Qt.AlignCenter)
-        self.label.setStyleSheet("font-size: 14px; font-weight: bold; color: black; margin: 10px")
-        layout.addWidget(self.label)
+        back_button = QPushButton("Back to Home")
+        back_button.setFixedWidth(125)
+        back_button.clicked.connect(self.go_to_home)
+        main_layout.addWidget(back_button)
+
+        label = QLabel("Select options for data generation:", self)
+        label.setAlignment(Qt.AlignCenter)
+        label.setStyleSheet("font-size: 14px; font-weight: bold; color: black; margin: 10px")
+        main_layout.addWidget(label)
 
         # Scaling Factor Dropdown
-        self.label1 = QLabel("Select Scaling Factor", self)
-        layout.addWidget(self.label1)
-
-        self.dropdown1 = QComboBox(self)
+        scaling_layout = QVBoxLayout()
+        scaling_label = QLabel("Select Scaling Factor")
+        self.dropdown1 = QComboBox()
         self.dropdown1.addItems(["1", "2", "3", "4", "5"])  # Scale factor options
-        layout.addWidget(self.dropdown1)
+        scaling_layout.addWidget(scaling_label)
+        scaling_layout.addWidget(self.dropdown1)
+        main_layout.addLayout(scaling_layout)
 
         # Ground Truth Size Dropdown
-        self.label2 = QLabel("Select Ground Truth Size:", self)
-        layout.addWidget(self.label2)
-
-        self.dropdown2 = QComboBox(self)
+        gt_layout = QVBoxLayout()
+        gt_label = QLabel("Select Ground Truth Size:")
+        self.dropdown2 = QComboBox()
         self.dropdown2.addItems(["3", "4", "5", "6", "7", "8", "9", "10", "15"])  # Ground truth size options
         self.dropdown2.currentIndexChanged.connect(self.update_box_size)  # Update box size and sliders
-        layout.addWidget(self.dropdown2)
+        gt_layout.addWidget(gt_label)
+        gt_layout.addWidget(self.dropdown2)
+        main_layout.addLayout(gt_layout)
         
         #Lesion Distribution Dropdown 
-        self.label3 = QLabel("Select Lesion Position Variance:", self)
-        layout.addWidget(self.label3)
-
-        #Lesion distribution options 
-        self.dropdown3 = QComboBox(self)
+        lesion_layout = QVBoxLayout()
+        lesion_label = QLabel("Select Lesion Position Variance:")
+        self.dropdown3 = QComboBox()
         self.dropdown3.setMaxVisibleItems(20)  
         self.dropdown3.addItems(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"])  #1-20
-        layout.addWidget(self.dropdown3)
+        lesion_layout.addWidget(lesion_label)
+        lesion_layout.addWidget(self.dropdown3)
+        main_layout.addLayout(lesion_layout)
 
         # Grid for visualization
-        self.grid = QFrame(self)
-        #change to 500 !!!!
+        self.grid = QFrame()
         self.grid.setFixedSize(500, 500)
         self.grid.setStyleSheet("background-color: black; margin: 10px")
-        layout.addWidget(self.grid)
+        main_layout.addWidget(self.grid, alignment=Qt.AlignCenter)
 
         # **Red Box (Ground Truth Indicator)**
         self.box = QLabel(self.grid)
@@ -60,21 +73,21 @@ class GenerateWindow(QMainWindow):
         self.box.move(0, 0)
 
         # **Sliders**
-        self.label_x = QLabel("X Position: 0", self)
-        layout.addWidget(self.label_x)
+        self.label_x = QLabel("X Position: 0")
+        main_layout.addWidget(self.label_x)
 
         self.slider_x = QSlider(Qt.Horizontal, self)
         self.slider_x.setTickInterval(1)
         self.slider_x.setTickPosition(QSlider.TicksBelow)
-        layout.addWidget(self.slider_x)
+        main_layout.addWidget(self.slider_x)
 
-        self.label_y = QLabel("Y Position: 0", self)
-        layout.addWidget(self.label_y)
+        self.label_y = QLabel("Y Position: 0")
+        main_layout.addWidget(self.label_y)
 
         self.slider_y = QSlider(Qt.Horizontal, self)
         self.slider_y.setTickInterval(1)
         self.slider_y.setTickPosition(QSlider.TicksBelow)
-        layout.addWidget(self.slider_y)
+        main_layout.addWidget(self.slider_y)
 
         # **Slider event connections**
         self.slider_x.valueChanged.connect(self.update_box_position)
@@ -83,29 +96,38 @@ class GenerateWindow(QMainWindow):
         # Save Button
         self.save_button = QPushButton("Generate Data", self)
         self.save_button.clicked.connect(self.save_selection)
-        layout.addWidget(self.save_button)
+        main_layout.addWidget(self.save_button)
         
         # Visualize Button 
         self.visualize_lesion_button = QPushButton("Visualize Data", self)
-        self.visualize_lesion_button.clicked.connect(self.visualize_data)
         self.visualize_lesion_button.setVisible(False) #Hide button until after lesions are generated
-        layout.addWidget(self.visualize_lesion_button)
+        self.visualize_lesion_button.clicked.connect(self.visualize_data)
+        main_layout.addWidget(self.visualize_lesion_button)
         
         # Text Box for Diagnoses Percentage
         self.diag_text_box = QLabel("Diagnoses Percentage", self)
         self.diag_text_box.setWordWrap(True)  # Enable word wrapping
         self.diag_text_box.setStyleSheet("border: 1px solid black; padding: 10px; background-color: #F0F0F0; color:black")
         self.diag_text_box.setVisible(False)
-        layout.addWidget(self.diag_text_box)
+        main_layout.addWidget(self.diag_text_box)
 
         
-        
+        scroll_content = QWidget()
+        scroll_content.setLayout(main_layout)
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setWidget(scroll_content)
+        outer_layout = QVBoxLayout()
+        outer_layout.addWidget(scroll_area)
+        self.setLayout(outer_layout)
+
         # Container
-        container = QWidget()
-        container.setLayout(layout)
-        self.setCentralWidget(container)
+        #container = QWidget()
+        #container.setLayout(layout)
+        #self.setCentralWidget(container)
 
         # Initialize slider ranges
+        self.setLayout(main_layout)
         self.update_box_size()
 
     def update_box_size(self):
