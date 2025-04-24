@@ -21,7 +21,7 @@ class Algorithm(QMainWindow):
         layout.addWidget(self.label)
 
         #Run Button
-        self.run_button - QPushButton(f"Run {mode}")
+        self.run_button = QPushButton(f"Run {mode}")
         self.run_button.clicked.connect(self.run_algorithm)
         layout.addWidget(self.run_button)
 
@@ -77,7 +77,7 @@ class ChooseUploader(QWidget):
         # Test & Train (should be diasabled until diagnosis and patient_data CSVs are uploaded)
         self.train_button = QPushButton("Train Algorithm")
         self.train_button.setEnabled(False)
-        self.train_button.clicked.connect(self.train_algorithm)
+        self.train_button.clicked.connect(self.train_and_test_algorithm)
         layout.addWidget(self.train_button)
 
         self.test_button = QPushButton("Test Algorithm")
@@ -147,11 +147,11 @@ class ChooseUploader(QWidget):
 
     
 
-    def train_algorithm(self):
+    def train_and_test_algorithm(self):
        QMessageBox.information(self, "Success", "Algorithm trained successfully!")
        print("Train button clicked")
        svm = SVMRunner(self.patient_data_path, self.diagnosis_data_path)
-       train_results = SVMRunner.train_and_evaluate(svm) 
+       train_results = SVMRunner.train_and_test(svm) 
        self.show_results_button.setVisible(True)
        self.last_report = train_results
        self.last_y_true = svm.diagnoses
@@ -161,22 +161,25 @@ class ChooseUploader(QWidget):
        self.layout.addWidget(self.save_button)
        self.show_results_button.setText("Visualize Training Results")
        self.save_button.clicked.connect(lambda: self.save_model(svm))
+       self.svm_model = svm.model 
     
 
     def test_algorithm(self):
-       QMessageBox.information(self, "Success", "Algorithm tested successfully!")
        print("Test button clicked")
        svm = SVMRunner(self.patient_data_path, self.diagnosis_data_path)
-       test_results = SVMRunner.test(svm) 
+       test_results = SVMRunner.test(svm)
+       QMessageBox.information(self, "Success", "Algorithm tested successfully!")
+       print(test_results)
        self.show_results_button.setVisible(True)
        self.last_report = test_results
        self.last_y_true = svm.diagnoses
        self.last_y_pred = svm.model.predict(svm.patient_matrices)
        self.show_results_button.setText("Visualize Testing Results")
+       self.svm_model = svm.model
        
     
     def show_results(self):
-        self.results_window = ResultsWindow(self.last_report, self.last_y_true, self.last_y_pred)
+        self.results_window = ResultsWindow(self.last_report, self.last_y_true, self.last_y_pred, model=self.svm_model )
         self.results_window.show()
     
     def save_model(self, svm):
