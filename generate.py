@@ -13,8 +13,9 @@ class GenerateWindow(QMainWindow):
         self.settings = QSettings("MediViz", "Lesion")
         self.past_x_position = self.settings.value("slider_x_position", 0, type=int)
         self.past_y_position = self.settings.value("slider_y_position", 0, type=int)
-
-
+        self.past_box_size = self.settings.value("box_size", 0, type=int)
+        self.past_scaling_factor = self.settings.value("scaling_factor", 0, type=int)
+        self.past_lesion_distribution = self.settings.value("lesion_distribution", 0, type=int)
         # Layout
         layout = QVBoxLayout()
 
@@ -29,6 +30,7 @@ class GenerateWindow(QMainWindow):
 
         self.dropdown1 = QComboBox(self)
         self.dropdown1.addItems(["1", "2", "3", "4", "5"])  # Scale factor options
+        self.dropdown1.setCurrentText(str(self.past_scaling_factor)) 
         layout.addWidget(self.dropdown1)
 
         # Ground Truth Size Dropdown
@@ -37,6 +39,8 @@ class GenerateWindow(QMainWindow):
 
         self.dropdown2 = QComboBox(self)
         self.dropdown2.addItems(["3", "4", "5", "6", "7", "8", "9", "10", "15"])  # Ground truth size options
+        self.dropdown2.setCurrentText(str(self.past_box_size))
+
         self.dropdown2.currentIndexChanged.connect(self.update_box_size)  # Update box size and sliders
         layout.addWidget(self.dropdown2)
         
@@ -48,6 +52,7 @@ class GenerateWindow(QMainWindow):
         self.dropdown3 = QComboBox(self)
         self.dropdown3.setMaxVisibleItems(20)  
         self.dropdown3.addItems(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"])  #1-20
+        self.dropdown3.setCurrentText(str(self.past_lesion_distribution)) 
         layout.addWidget(self.dropdown3)
 
         # Grid for visualization
@@ -129,7 +134,9 @@ class GenerateWindow(QMainWindow):
         """Saves the current slider positions when the window is closed."""
         self.settings.setValue("slider_x_position", self.slider_x.value())
         self.settings.setValue("slider_y_position", self.slider_y.value())
-
+        self.settings.setValue("box_size", self.dropdown2.currentText())
+        self.settings.setValue("scaling_factor", self.dropdown1.currentText())
+        self.settings.setValue("lesion_distribution", self.dropdown3.currentText())
         super().closeEvent(event)
 
     def update_box_size(self):
