@@ -39,7 +39,7 @@ class CSVUploader(QMainWindow):
                                         color: white; 
                                         padding: 10px; 
                                         border: 1px solid #e0e0e0}
-                                        QPushButton:hover{background-color: #F5F8F9
+                                        QPushButton:hover{background-color: #ececec
                                         }""")
         faq_button.clicked.connect(self.faq_page)
         layout.addWidget(faq_button)
@@ -59,7 +59,7 @@ class CSVUploader(QMainWindow):
                                     padding: 10px; 
                                     border: 1px solid #e0e0e0
                                     } 
-                                    QPushButton:hover{background-color: #F5F8F9
+                                    QPushButton:hover{background-color: #ececec
                                     }""")
         upload_button.clicked.connect(self.run_algorithm) # (used to be self.upload_folder)
         button_layout.addWidget(upload_button)
@@ -74,7 +74,7 @@ class CSVUploader(QMainWindow):
                                         color: white; 
                                         padding: 10px; 
                                         border: 1px solid #e0e0e0}
-                                        QPushButton:hover{background-color: #F5F8F9
+                                        QPushButton:hover{background-color: #ececec
                                         }""")
         generate_button.clicked.connect(self.generate_data)
         button_layout.addWidget(generate_button)
