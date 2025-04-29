@@ -23,6 +23,7 @@ class GenerateWindow(QWidget):
 
         back_button = QPushButton("Back to Home")
         back_button.setFixedWidth(125)
+        back_button.setStyleSheet("border: 1px solid #cccccc; border-radius: 6px;")
         back_button.clicked.connect(self.go_to_home)
         main_layout.addWidget(back_button)
 
@@ -116,6 +117,7 @@ class GenerateWindow(QWidget):
         scroll_content.setLayout(main_layout)
         scroll_area = QScrollArea()
         scroll_area.setWidgetResizable(True)
+        scroll_area.setStyleSheet("background-color: #EDEDED; border: none;")
         scroll_area.setWidget(scroll_content)
         outer_layout = QVBoxLayout()
         outer_layout.addWidget(scroll_area)
