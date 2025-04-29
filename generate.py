@@ -46,6 +46,10 @@ class GenerateWindow(QWidget):
         self.dropdown1.addItems(["1", "2", "3", "4", "5"])  # Scale factor options
         self.dropdown1.setCurrentText(str(self.past_scaling_factor)) 
 
+        self.dropdown1.setStyleSheet("""
+            QComboBox QAbstractItemView{background-color: white; selection-background-color: #87CEFA; selection-color: black;}
+        """)
+
         scaling_layout.addWidget(self.dropdown1)
         main_layout.addLayout(scaling_layout)
 
@@ -57,6 +61,9 @@ class GenerateWindow(QWidget):
         self.dropdown2 = QComboBox()
         self.dropdown2.addItems(["3", "4", "5", "6", "7", "8", "9", "10", "15"])  # Ground truth size options
         self.dropdown2.setCurrentText(str(self.past_box_size))
+        self.dropdown2.setStyleSheet("""
+            QComboBox QAbstractItemView{background-color: white; selection-background-color: #87CEFA; selection-color: black;}
+        """)
         
         self.dropdown2.currentIndexChanged.connect(self.update_box_size)  # Update box size and sliders
         gt_layout.addWidget(self.dropdown2)
@@ -71,7 +78,10 @@ class GenerateWindow(QWidget):
         self.dropdown3.setMaxVisibleItems(20)  
         self.dropdown3.addItems(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"])  #1-20
         self.dropdown3.setCurrentText(str(self.past_lesion_distribution)) 
-    
+        self.dropdown3.setStyleSheet("""
+            QComboBox QAbstractItemView{background-color: white; selection-background-color: #87CEFA; selection-color: black;}
+        """)
+
         lesion_layout.addWidget(self.dropdown3)
         main_layout.addLayout(lesion_layout)
 
@@ -115,6 +125,7 @@ class GenerateWindow(QWidget):
 
         # Save Button
         self.save_button = QPushButton("Generate Data", self)
+        self.save_button.setStyleSheet("border: 1px solid #cccccc; border-radius: 6px;")
         self.save_button.clicked.connect(self.save_selection)
         main_layout.addWidget(self.save_button)
         
@@ -122,6 +133,7 @@ class GenerateWindow(QWidget):
         self.visualize_lesion_button = QPushButton("Visualize Data", self)
         self.visualize_lesion_button.setVisible(False) #Hide button until after lesions are generated
         self.visualize_lesion_button.clicked.connect(self.visualize_data)
+        self.visualize_lesion_button.setStyleSheet("border: 1px solid #cccccc; border-radius: 6px;")
         main_layout.addWidget(self.visualize_lesion_button)
         
         # Text Box for Diagnoses Percentage
@@ -212,6 +224,13 @@ class GenerateWindow(QWidget):
         print(f"Saved ground truth of size {ground_truth_size} at ({x_grid}, {y_grid})")
       
 
+        # Save dropdowns and sliders
+        self.settings.setValue("slider_x_position", self.slider_x.value())
+        self.settings.setValue("slider_y_position", self.slider_y.value())
+        self.settings.setValue("box_size", self.dropdown2.currentText())
+        self.settings.setValue("scaling_factor", self.dropdown1.currentText())
+        self.settings.setValue("lesion_distribution", self.dropdown3.currentText())
+        
         # Generate patient data using the scale factor
         generate_data.generate_patient_data(scale_factor=scale_factor)
         self.make_diagnoses()
