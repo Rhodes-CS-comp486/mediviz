@@ -151,29 +151,30 @@ class ChooseUploader(QWidget):
        QMessageBox.information(self, "Success", "Algorithm trained successfully!")
        print("Train button clicked")
        svm = SVMRunner(self.patient_data_path, self.diagnosis_data_path)
-       train_results = SVMRunner.train_and_test(svm) 
+       train_results, y_true, y_pred = SVMRunner.train_and_test(svm) 
        self.show_results_button.setVisible(True)
        self.last_report = train_results
-       self.last_y_true = svm.diagnoses
-       self.last_y_pred = svm.model.predict(svm.patient_matrices)
+       self.last_y_true = y_true
+       self.last_y_pred = y_pred
        print(train_results)
        self.save_button = QPushButton("Save Trained Model")
        self.layout.addWidget(self.save_button)
        self.show_results_button.setText("Visualize Training Results")
        self.save_button.clicked.connect(lambda: self.save_model(svm))
        self.svm_model = svm.model 
+       
     
 
     def test_algorithm(self):
        print("Test button clicked")
        svm = SVMRunner(self.patient_data_path, self.diagnosis_data_path)
-       test_results = SVMRunner.test(svm)
+       test_results, y_true, y_pred = SVMRunner.test(svm)
        QMessageBox.information(self, "Success", "Algorithm tested successfully!")
        print(test_results)
        self.show_results_button.setVisible(True)
        self.last_report = test_results
-       self.last_y_true = svm.diagnoses
-       self.last_y_pred = svm.model.predict(svm.patient_matrices)
+       self.last_y_true = y_true
+       self.last_y_pred = y_pred
        self.show_results_button.setText("Visualize Testing Results")
        self.svm_model = svm.model
        
