@@ -23,7 +23,7 @@ class ResultsWindow(QMainWindow):
 
         label = QLabel("SVM Classification Report")
         label.setAlignment(Qt.AlignCenter)
-        label.setStyleSheet("font-size: 18px; font-weight: bold; color: white; margin: 10px;")
+        label.setStyleSheet("font-size: 18px; font-weight: bold; color: black; margin: 10px;")
         layout.addWidget(label)
 
         self.table = QTableWidget()
@@ -138,7 +138,7 @@ class ResultsWindow(QMainWindow):
         cm = confusion_matrix(self.y_true, self.y_pred)
         disp = ConfusionMatrixDisplay(confusion_matrix=cm)
         disp.plot(cmap=plt.cm.Blues)
-        plt.title("Confusion Matrix")
+        plt.title("Confusion Matrix", color="black")
         plt.show()
         
     def show_heatmap(self):

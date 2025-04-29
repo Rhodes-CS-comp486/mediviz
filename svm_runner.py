@@ -66,7 +66,8 @@ class SVMRunner:
             return f"Error loading model: {e}"
         prediction = self.model.predict(self.patient_matrices)
         #Run prediction
-        return classification_report(self.diagnoses, prediction)
+        self.report = classification_report(self.diagnoses, prediction)
+        return self.report, self.diagnoses, prediction 
     
     def load_trained_model(filename='svm_model.pkl'):
         """Loads the SVM model from a file."""
