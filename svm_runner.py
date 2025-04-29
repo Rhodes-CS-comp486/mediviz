@@ -38,10 +38,10 @@ class SVMRunner:
         # Split the data into training and testing sets
         patient_train, patient_test, diagnosis_train, diagnosis_test = train_test_split(self.patient_matrices, self.diagnoses, test_size=0.2, random_state=42)
         self.model.fit(patient_train, diagnosis_train)
-        predictions_train = self.model.predict(patient_train)
+        #predictions_train = self.model.predict(patient_train)
         predictions_test = self.model.predict(patient_test)
         self.report = classification_report(diagnosis_test, predictions_test)
-        return self.report
+        return self.report, diagnosis_test, predictions_test
     
     def test(self):
         """Tests the SVM model on new data and returns the predictions."""
