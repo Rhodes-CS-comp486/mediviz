@@ -11,6 +11,9 @@ class GenerateWindow(QWidget):
     
     def __init__(self, stacked_widget):
         super().__init__()
+
+  
+        
         self.stacked_widget = stacked_widget
         #self.setWindowTitle("Generate Data")
         #self.setGeometry(400, 400, 400, 400)
@@ -57,6 +60,7 @@ class GenerateWindow(QWidget):
         # Ground Truth Size Dropdown
         gt_layout = QVBoxLayout()
         gt_label = QLabel("Select Ground Truth Size:")
+        gt_label.setStyleSheet("color: black;")
         gt_layout.addWidget(gt_label)
 
         self.dropdown2 = QComboBox()
@@ -174,6 +178,7 @@ class GenerateWindow(QWidget):
         self.slider_y.valueChanged.connect(self.update_box_position)
         self.dropdown2.currentIndexChanged.connect(self.update_box_size)  # Update box size and sliders
 
+        
     def closeEvent(self, event):
         """Saves the current slider positions when the window is closed."""
         self.settings.setValue("slider_x_position", self.slider_x.value())
