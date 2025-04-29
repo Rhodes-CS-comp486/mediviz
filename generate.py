@@ -40,33 +40,38 @@ class GenerateWindow(QWidget):
         # Scaling Factor Dropdown
         scaling_layout = QVBoxLayout()
         scaling_label = QLabel("Select Scaling Factor")
+        scaling_layout.addWidget(scaling_label)
+
         self.dropdown1 = QComboBox()
         self.dropdown1.addItems(["1", "2", "3", "4", "5"])  # Scale factor options
         self.dropdown1.setCurrentText(str(self.past_scaling_factor)) 
-        scaling_layout.addWidget(scaling_label)
+
         scaling_layout.addWidget(self.dropdown1)
         main_layout.addLayout(scaling_layout)
 
         # Ground Truth Size Dropdown
         gt_layout = QVBoxLayout()
         gt_label = QLabel("Select Ground Truth Size:")
+        gt_layout.addWidget(gt_label)
+
         self.dropdown2 = QComboBox()
         self.dropdown2.addItems(["3", "4", "5", "6", "7", "8", "9", "10", "15"])  # Ground truth size options
         self.dropdown2.setCurrentText(str(self.past_box_size))
-
+        
         self.dropdown2.currentIndexChanged.connect(self.update_box_size)  # Update box size and sliders
-        gt_layout.addWidget(gt_label)
         gt_layout.addWidget(self.dropdown2)
         main_layout.addLayout(gt_layout)
         
         #Lesion Distribution Dropdown 
         lesion_layout = QVBoxLayout()
         lesion_label = QLabel("Select Lesion Position Variance:")
+        lesion_layout.addWidget(lesion_label)
+
         self.dropdown3 = QComboBox()
         self.dropdown3.setMaxVisibleItems(20)  
         self.dropdown3.addItems(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"])  #1-20
         self.dropdown3.setCurrentText(str(self.past_lesion_distribution)) 
-        lesion_layout.addWidget(lesion_label)
+    
         lesion_layout.addWidget(self.dropdown3)
         main_layout.addLayout(lesion_layout)
 
