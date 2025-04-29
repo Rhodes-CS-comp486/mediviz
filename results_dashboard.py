@@ -61,7 +61,20 @@ class ResultsWindow(QMainWindow):
 
         self.table.setColumnCount(len(header) + 1)
         self.table.setRowCount(len(data_lines))
-        self.table.setHorizontalHeaderLabels([""] + header)
+        self.table.setHorizontalHeaderLabels(["Label"] + header)
+
+        #Adding tooltips for specific terms
+        tooltips = {
+            "precision": "Precision = TP/ (TP + FP)\nHow accurate positive predictions are.",
+            "recall": "Recall = TP/ (TP + FN)\nHow well all positive cases are detected.",
+            "f1-score": "F1 Score = 2*(Precision*Recall)/(Precision+Recall)\nBalance between precision and recall.",
+            "support": "Support = Number of true samples for this label."
+        }
+
+        for col_idk in range(1, len(header) + 1):
+            item = self.table.horizontalHeaderItem(col_idx)
+            if item.text().lower() in tooltips:
+                item.setToolTip(tooltips[item.text().lower()])
 
         for row_idx, line in enumerate(data_lines):
             # Use regex to split line into label and values
