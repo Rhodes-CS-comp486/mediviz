@@ -94,6 +94,7 @@ class GenerateWindow(QWidget):
         self.slider_x = QSlider(Qt.Horizontal, self)
         self.slider_x.setTickInterval(1)
         self.slider_x.setTickPosition(QSlider.TicksBelow)
+        self.slider_x.setValue(self.past_x_position)
         main_layout.addWidget(self.slider_x)
 
 
