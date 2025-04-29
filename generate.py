@@ -47,6 +47,7 @@ class GenerateWindow(QWidget):
         self.dropdown1.setCurrentText(str(self.past_scaling_factor)) 
 
         self.dropdown1.setStyleSheet("""
+            QComboBox{background-color: white; color: black;}
             QComboBox QAbstractItemView{background-color: white; selection-background-color: #87CEFA; selection-color: black;}
         """)
 
@@ -62,6 +63,7 @@ class GenerateWindow(QWidget):
         self.dropdown2.addItems(["3", "4", "5", "6", "7", "8", "9", "10", "15"])  # Ground truth size options
         self.dropdown2.setCurrentText(str(self.past_box_size))
         self.dropdown2.setStyleSheet("""
+            QComboBox{background-color: white; color: black;}
             QComboBox QAbstractItemView{background-color: white; selection-background-color: #87CEFA; selection-color: black;}
         """)
         
@@ -79,6 +81,7 @@ class GenerateWindow(QWidget):
         self.dropdown3.addItems(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"])  #1-20
         self.dropdown3.setCurrentText(str(self.past_lesion_distribution)) 
         self.dropdown3.setStyleSheet("""
+            QComboBox{background-color: white; color: black;}
             QComboBox QAbstractItemView{background-color: white; selection-background-color: #87CEFA; selection-color: black;}
         """)
 
