@@ -71,7 +71,7 @@ class ResultsWindow(QMainWindow):
             "support": "Support = Number of true samples for this label."
         }
 
-        for col_idk in range(1, len(header) + 1):
+        for col_idx in range(1, len(header) + 1):
             item = self.table.horizontalHeaderItem(col_idx)
             if item.text().lower() in tooltips:
                 item.setToolTip(tooltips[item.text().lower()])
