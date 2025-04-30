@@ -41,7 +41,8 @@ class SVMRunner:
         #predictions_train = self.model.predict(patient_train)
         predictions_test = self.model.predict(patient_test)
         self.report = classification_report(diagnosis_test, predictions_test)
-        return self.report, diagnosis_test, predictions_test
+
+        return self.report, diagnosis_test, patient_test, diagnosis_train, patient_train
     
     def test(self):
         """Tests the SVM model on new data and returns the predictions."""

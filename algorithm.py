@@ -151,11 +151,14 @@ class ChooseUploader(QWidget):
        QMessageBox.information(self, "Success", "Algorithm trained successfully!")
        print("Train button clicked")
        svm = SVMRunner(self.patient_data_path, self.diagnosis_data_path)
-       train_results, y_true, y_pred = SVMRunner.train_and_test(svm) 
+       train_results, y_true, y_pred, train_true, train_pred = SVMRunner.train_and_test(svm) 
        self.show_results_button.setVisible(True)
        self.last_report = train_results
        self.last_y_true = y_true
        self.last_y_pred = y_pred
+       self.last_train_true = train_true
+       self.last_train_pred = train_pred
+
        print(train_results)
        self.save_button = QPushButton("Save Trained Model")
        self.layout.addWidget(self.save_button)
@@ -180,7 +183,7 @@ class ChooseUploader(QWidget):
        
     
     def show_results(self):
-        self.results_window = ResultsWindow(self.last_report, self.last_y_true, self.last_y_pred, model=self.svm_model )
+        self.results_window = ResultsWindow(self.last_report, self.last_y_true, self.last_y_pred, self.last_train_true, self.last_train_pred, model=self.svm_model )
         self.results_window.show()
     
     def save_model(self, svm):

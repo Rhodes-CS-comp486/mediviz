@@ -10,7 +10,7 @@ import pandas as pd
 import re
 
 class ResultsWindow(QMainWindow):
-    def __init__(self, report_text, y_true=None, y_pred=None, model=None):
+    def __init__(self, report_text, y_true=None, y_pred=None, train_true=None, train_pred=None, model=None):
         super().__init__()
         self.setWindowTitle("SVM Results Dashboard")
         self.setGeometry(500, 500, 700, 500)
@@ -18,6 +18,8 @@ class ResultsWindow(QMainWindow):
         self.y_pred = y_pred
         self.report_text = report_text
         self.model = model
+        self.train_true = train_true
+        self.train_pred = train_pred
 
         layout = QVBoxLayout()
 
@@ -35,11 +37,17 @@ class ResultsWindow(QMainWindow):
         export_button.clicked.connect(self.export_to_csv)
         layout.addWidget(export_button)
 
-        # Confusion Matrix Button (only if data available)
+        # TRAINING Confusion Matrix Button (only if data available)
+        if train_true is not None and train_pred is not None:
+            cm_train_button = QPushButton("Show Training Confusion Matrix")
+            cm_train_button.clicked.connect(self.show_training_confusion_matrix)
+            layout.addWidget(cm_train_button)
+        
+        # TESTING Confusion Matrix Button (only if data available)
         if y_true is not None and y_pred is not None:
-            cm_button = QPushButton("Show Confusion Matrix")
-            cm_button.clicked.connect(self.show_confusion_matrix)
-            layout.addWidget(cm_button)
+            cm_test_button = QPushButton("Show Testing Confusion Matrix")
+            cm_test_button.clicked.connect(self.show_testing_confusion_matrix)
+            layout.addWidget(cm_test_button)
         
         hm_button = QPushButton("Show Voxel Weight Heatmap")
         hm_button.clicked.connect(lambda: self.show_heatmap())
@@ -130,15 +138,26 @@ class ResultsWindow(QMainWindow):
 
         QMessageBox.information(self, "Success", f"Report saved to:\n{save_path}")
 
-    def show_confusion_matrix(self):
+    def show_training_confusion_matrix(self):
+        if self.train_true is None or self.train_pred is None:
+            QMessageBox.warning(self, "Error", "Missing labels for confusion matrix.")
+            return
+        
+        cm_train = confusion_matrix(self.train_true, self.train_pred)
+        disp = ConfusionMatrixDisplay(confusion_matrix=cm_train)
+        disp.plot(cmap=plt.cm.Blues)
+        plt.title("Training Confusion Matrix", color="black")
+        plt.show()
+
+    def show_testing_confusion_matrix(self):
         if self.y_true is None or self.y_pred is None:
             QMessageBox.warning(self, "Error", "Missing labels for confusion matrix.")
             return
 
-        cm = confusion_matrix(self.y_true, self.y_pred)
-        disp = ConfusionMatrixDisplay(confusion_matrix=cm)
+        cm_test = confusion_matrix(self.y_true, self.y_pred)
+        disp = ConfusionMatrixDisplay(confusion_matrix=cm_test)
         disp.plot(cmap=plt.cm.Blues)
-        plt.title("Confusion Matrix", color="black")
+        plt.title("Testing Confusion Matrix", color="black")
         plt.show()
         
     def show_heatmap(self):
