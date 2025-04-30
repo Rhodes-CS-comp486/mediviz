@@ -30,12 +30,11 @@ class GenerateWindow(QWidget):
         main_layout.setSpacing(15)
 
         back_button = QPushButton("Back to Home")
-        back_button.setFixedWidth(125)
         back_button.setStyleSheet("""
     QPushButton {
         background-color: rgb(118, 149, 177);
         font-family: 'Trebuchet MS';
-        font-size: 14px;
+        font-size: 8px;
         font-weight: bold;
         color: white;
         padding: 10px;
@@ -47,6 +46,8 @@ class GenerateWindow(QWidget):
         color: black;
     }
 """)
+        back_button.setFixedWidth(80)
+        
 
         back_button.clicked.connect(self.go_to_home)
         main_layout.addWidget(back_button)
@@ -148,7 +149,22 @@ class GenerateWindow(QWidget):
 
         # Save Button
         self.save_button = QPushButton("Generate Data", self)
-        self.save_button.setStyleSheet("border: 1px solid #cccccc; border-radius: 6px;")
+        self.save_button.setStyleSheet("""
+    QPushButton {
+        background-color: rgb(118, 149, 177);
+        font-family: 'Trebuchet MS';
+        font-size: 14px;
+        font-weight: bold;
+        color: white;
+        padding: 10px;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+    }
+    QPushButton:hover {
+        background-color: #ececec;
+        color: black;
+    }
+""")
         self.save_button.clicked.connect(self.save_selection)
         main_layout.addWidget(self.save_button)
         
@@ -156,7 +172,22 @@ class GenerateWindow(QWidget):
         self.visualize_lesion_button = QPushButton("Visualize Data", self)
         self.visualize_lesion_button.setVisible(False) #Hide button until after lesions are generated
         self.visualize_lesion_button.clicked.connect(self.visualize_data)
-        self.visualize_lesion_button.setStyleSheet("border: 1px solid #cccccc; border-radius: 6px;")
+        self.visualize_lesion_button.setStyleSheet("""
+    QPushButton {
+        background-color: rgb(118, 149, 177);
+        font-family: 'Trebuchet MS';
+        font-size: 14px;
+        font-weight: bold;
+        color: white;
+        padding: 10px;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+    }
+    QPushButton:hover {
+        background-color: #ececec;
+        color: black;
+    }
+""")
         main_layout.addWidget(self.visualize_lesion_button)
         
         # Text Box for Diagnoses Percentage

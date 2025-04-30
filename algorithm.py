@@ -52,12 +52,12 @@ class ChooseUploader(QWidget):
         layout = self.layout
 
         back_button = QPushButton("Back to Home")
-        back_button.setFixedWidth(125)
+        back_button.setFixedWidth(80)
         back_button.setStyleSheet("""
     QPushButton {
         background-color: rgb(118, 149, 177);
         font-family: 'Trebuchet MS';
-        font-size: 14px;
+        font-size: 8px;
         font-weight: bold;
         color: white;
         padding: 10px;
@@ -78,6 +78,7 @@ class ChooseUploader(QWidget):
         layout.addWidget(self.patient_label)
 
         self.patient_button = QPushButton("Upload Patient Data CSV")
+       
         self.patient_button.clicked.connect(lambda: self.upload_file("patient"))
         layout.addWidget(self.patient_button)
 
@@ -87,17 +88,20 @@ class ChooseUploader(QWidget):
         layout.addWidget(self.diagnosis_label)
 
         self.diagnosis_button = QPushButton("Upload Diagnosis CSV")
+       
         self.diagnosis_button.clicked.connect(lambda: self.upload_file("diagnosis"))
         layout.addWidget(self.diagnosis_button)
 
         # Test & Train (should be diasabled until diagnosis and patient_data CSVs are uploaded)
         self.train_button = QPushButton("Train Algorithm")
         self.train_button.setEnabled(False)
+       
         self.train_button.clicked.connect(self.train_and_test_algorithm)
         layout.addWidget(self.train_button)
 
         self.test_button = QPushButton("Test Algorithm")
         self.test_button.setEnabled(False)
+      
         self.test_button.clicked.connect(self.test_algorithm)
         layout.addWidget(self.test_button)
 

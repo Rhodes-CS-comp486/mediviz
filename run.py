@@ -34,7 +34,7 @@ class CSVUploader(QMainWindow):
         faq_button = QPushButton("Instructions and FAQs", self)
         faq_button.setStyleSheet("""QPushButton{background-color: rgb(162, 191, 215); 
                                         font-family: 'Trebuchet MS';
-                                        font-size: 16px; 
+                                        font-size: 13px; 
                                         font-weight: bold; 
                                         color: white; 
                                         padding: 10px; 
