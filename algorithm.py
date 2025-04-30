@@ -53,6 +53,22 @@ class ChooseUploader(QWidget):
 
         back_button = QPushButton("Back to Home")
         back_button.setFixedWidth(125)
+        back_button.setStyleSheet("""
+    QPushButton {
+        background-color: rgb(118, 149, 177);
+        font-family: 'Trebuchet MS';
+        font-size: 14px;
+        font-weight: bold;
+        color: white;
+        padding: 10px;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+    }
+    QPushButton:hover {
+        background-color: #ececec;
+        color: black;
+    }
+""")
         back_button.clicked.connect(self.go_to_home)
         layout.addWidget(back_button)
 
