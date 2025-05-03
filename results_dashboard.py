@@ -153,7 +153,7 @@ class ResultsWindow(QMainWindow):
                 base_dir = os.path.dirname(os.path.abspath(__file__))
 
                 # Point to ground_truth.csv in the project root
-                gt_path = os.path.join(base_dir, "ground_truth.csv")
+                gt_path = os.path.join(base_dir, "demo_ground_truth.csv")
                 ground_truth = pd.read_csv(gt_path, header = None).values 
                 
                 weights = self.model.coef_[0]
@@ -171,7 +171,8 @@ class ResultsWindow(QMainWindow):
                     vmax=+max_abs
                 )
                 #Lay groundtruth onto heatmap 
-                plt.contour(ground_truth, levels=[0.5], colors='blue', linewidths=1.5)
+                #plt.contour(ground_truth, levels=[0.5], colors='green', linewidths=1.5)
+                plt.contour(ground_truth, levels=[0.5], colors='green', linewidths=2)
                 
                 plt.colorbar(heatmap_im)
                 plt.title("SVM Weights Heatmap")

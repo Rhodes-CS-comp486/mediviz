@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget, QFileDialog, QLabel, QTextEdit, QHBoxLayout, QStackedWidget, QScrollArea
+from PySide6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget, QFileDialog, QLabel, QTextEdit, QHBoxLayout, QStackedWidget, QScrollArea, QSpacerItem
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QPixmap
 import pandas as pd
@@ -30,8 +30,14 @@ class CSVUploader(QMainWindow):
         logo_label.setScaledContents(True)
         layout.addWidget(logo_label, alignment=Qt.AlignCenter)
 
+        spacer = QSpacerItem(20, 30)
+        layout.addItem(spacer)
+
         # "Instructions and FAQs" button -- links to new page in the same window
+        faq_layout = QHBoxLayout()
+        faq_layout.setAlignment(Qt.AlignCenter)
         faq_button = QPushButton("Instructions and FAQs", self)
+        faq_button.setFixedWidth(710)
         faq_button.setStyleSheet("""QPushButton{background-color: rgb(162, 191, 215); 
                                         font-family: 'Trebuchet MS';
                                         font-size: 13px; 
@@ -42,7 +48,8 @@ class CSVUploader(QMainWindow):
                                         QPushButton:hover{background-color: #ececec
                                         }""")
         faq_button.clicked.connect(self.faq_page)
-        layout.addWidget(faq_button)
+        faq_layout.addWidget(faq_button)
+        layout.addLayout(faq_layout)
         
         button_layout = QHBoxLayout()
         button_layout.setSpacing(10)
@@ -81,9 +88,14 @@ class CSVUploader(QMainWindow):
 
         layout.addLayout(button_layout)
 
+        outer_layout = QVBoxLayout()
+        outer_layout.addStretch()
+        outer_layout.addLayout(layout)
+        outer_layout.addStretch()
+        outer_layout.setAlignment(Qt.AlignCenter)
         # Container 
         container = QWidget()
-        container.setLayout(layout)
+        container.setLayout(outer_layout)
         container.setStyleSheet("background-color: rgb(255,255,255);")
         self.setCentralWidget(container)
     
@@ -182,6 +194,13 @@ class FAQ_Page(QWidget):
             </ul>
             <br></br>
             <li>How do I interpret the SVM output chart?</li>
+            <ul>
+                <li>There are four columns: precision, recall, f1-score, and support.</li>
+                <li><b>Precision:</b> precision = TP / (TP + FP); Precision is always calculated over a column in the confusion matrix. We can then interpret this as: "of all the examples predicted to be in class X, how many were actually in class X?" (where X is 0 or 1) </li>
+                <li><b>Recall:</b> recall = TP / (TP + FP); Recall is always calculated over a row in the confusion matrix. We can interpret this as: "of all the examples in class X, how many were predicted to be in class X?" (where X is 0 or 1)</li>
+                <li><b>F1-Score:</b> metric used to evaluate the performance of the classifier.</li>
+                <li><b>Support:</b> tells us the number of examples.</li>
+            </ul>
         </ul>
         """
         add_text = QLabel(faq_text)
