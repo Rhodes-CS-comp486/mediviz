@@ -276,7 +276,6 @@ class GenerateWindow(QWidget):
 
         # Save ground truth as CSV
         pd.DataFrame(grid_data).to_csv("ground_truth.csv", index=False, header=False)
-        print(f"Saved ground truth of size {ground_truth_size} at ({x_grid}, {y_grid})")
       
 
         # Save dropdowns and sliders
@@ -320,16 +319,12 @@ class GenerateWindow(QWidget):
 
         #Find the overlapping region (patient's 1s that intersect with the the ground truth 1s)
         overlap = np.sum((patient_data == 1) & ground_truth_mask)
-        print("overlap:  ", overlap)
         #Total number of 1s in the ground truth region (this is 4x4 = 16)
         #total_ground_truth_ones = np.sum(ground_truth_mask)
         patient_mask = patient_data == 1
         patient_ones = np.sum (patient_mask)
-        #print("total_ground_truth_ones:  ", total_ground_truth_ones)
         #Check if the overlap is greater than or equal to the threshold (50%)
         overlap_percentage = overlap / patient_ones
-        print(f"Overlap percentage: {overlap_percentage}")
-        print(f"Overlap threshold: {overlap_threshold}")
 
         if overlap_percentage >= overlap_threshold:
             return 1
@@ -347,19 +342,12 @@ class GenerateWindow(QWidget):
             #row_data = df.iloc[i].values[1:] test diff order for debugging note: are we accidentally excluding some patients by doing [1:] should it be [0:]
             row_data = df.iloc[i, 1:].values
             test = pd.DataFrame(row_data.reshape(50,50))
-            print(f"Patient data shape: {test.shape}")
-            print(test)
             #print(f"Ground truth shape: {df_ground_truth.shape}")
             temp_diagnosis = GenerateWindow.check_overlap(test, df_ground_truth, overlap_threshold=0.5)
             if temp_diagnosis == 1:
                 diagnosis.append(1)
-                print("patient number")
-                print(i)
-                print(test)
             else:
                 diagnosis.append(0)
-            #print(test)
-            #print(temp_diagnosis)
            # Create a DataFrame for the diagnoses
         diagnoses_df = pd.DataFrame({'Diagnosis': diagnosis})
 
@@ -367,7 +355,6 @@ class GenerateWindow(QWidget):
         output_filename = 'diagnoses.csv'
         diagnoses_df.to_csv(output_filename, index=False)
 
-        print(f"Diagnoses saved to {output_filename}")
     
     def visualize_data(self): 
         """Opens the data generation window."""
